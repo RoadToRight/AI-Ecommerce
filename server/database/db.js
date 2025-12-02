@@ -1,14 +1,17 @@
-import {pkg} from "pg";
+import pkg from "pg";
 
-const {Client} = pkg;
+const { Client } = pkg;
+
+
 
 const database = new Client({
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    host:process.env.DB_HOST,
-    port:process.env.DB_PORT,
-    database:process.env.DB_NAME
+    user: `postgres`,
+    password: `${process.env.DB_PASSWORD}`,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME
 })
+
 
 try {
     await database.connect();

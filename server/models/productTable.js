@@ -1,4 +1,4 @@
-import database from "../database/db";
+import database from "../database/db.js";
 
 export async function createProductsTable(){
     try {
@@ -6,7 +6,7 @@ export async function createProductsTable(){
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         name VARCHAR(20) NOT NULL,
         description TEXT NOT NULL,
-        price decimal(7,1) NOT NULL CHECK (price >= 0),
+        price decimal(7,2) NOT NULL CHECK (price >= 0),
         category VARCHAR(50) NOT NULL,
         ratings DECIMAL(2,1) NOT NULL DEFAULT 0 CHECK (ratings BETWEEN 0 AND 5),
         images JSONB DEFAULT '[]' ::JSONB

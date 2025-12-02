@@ -1,6 +1,6 @@
-import database from "../database/db";
+import database from "../database/db.js";
 
-export async function createShippingInfoTable() {
+export async function createProductReviews() {
     try {
         const query = `CREATE TABLE IF NOT EXISTS reviews(
            id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
