@@ -11,7 +11,7 @@ export async function createProductReviews() {
            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
               FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )`
+        );`
         await database.query(query);
     } catch (error) {
         console.error("Error in creating Shipping Info table:", error);

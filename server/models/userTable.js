@@ -13,7 +13,7 @@ export async function createUserTable() {
                 reset_password_token TEXT DEFAULT NULL,
                 reset_password_expire TIMESTAMP DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
+            );
         `;
         await database.query(query)
     } catch (error) {

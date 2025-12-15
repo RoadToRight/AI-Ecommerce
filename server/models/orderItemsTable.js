@@ -13,7 +13,7 @@ export async function createOrderItemTable() {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   
             FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,  
             FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE 
-        )`;
+        );`;
         await database.query(query)
     } catch (error) {
         console.error("Error in creating Orders item Info table:", error);
