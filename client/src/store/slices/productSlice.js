@@ -3,7 +3,7 @@ import { productsApi } from '../api/productsApi';
 
 
 let initialState = {
-    prodcuts: [],
+    products: [],
 }
 
 
@@ -15,19 +15,19 @@ export const productSlice = createSlice({
             .addMatcher(
                 productsApi.endpoints.getAllProducts.matchPending,
                 (state) => {
-                    state.prodcuts = [];
+                    state.products = [];
                 }
             )
             .addMatcher(
                 productsApi.endpoints.getAllProducts.matchFulfilled,
                 (state, action) => {
-                    state.prodcuts = action.payload;
+                    state.products = action.payload;
                 }
             )
             .addMatcher(
                 productsApi.endpoints.getAllProducts.matchRejected,
                 (state, action) => {
-                    state.prodcuts = [];
+                    state.products = [];
                 }
             )
     },

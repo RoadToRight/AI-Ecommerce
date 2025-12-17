@@ -183,12 +183,12 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
-  const { name, description, price, category = "All", stock = 0, created_by="users" } = req.body;
+  const { name, description, price, category = "All", stock = 0 } = req.body;
 
   if (!name || !description || !price) {
     return res.status(400).json({
       success: false,
-      message: "All fields are required"
+      message: "Please Fill Required Fields"
     })
   }
 
@@ -217,23 +217,24 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
   try {
     const Product = await database.query(`
-      INSERT INTO products (name, description, price, category, stock, images) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *
-    `, [name, description, price, category, stock, JSON.stringify(Images)])
-      res.status(201).json({
-    success: true,
-    product: Product.rows[0]
-  })
+      INSERT INTO products (name, description, price, category, stock, images,created_by) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *
+    `, [name, description, price, category, stock, JSON.stringify(Images),req.user.id])
+    res.status(201).json({
+      success: true,
+      product: Product.rows[0],
+      message: "Product Created Successfully"
+    })
   } catch (error) {
-    const result = await Promise.all(
+    await Promise.all(
       images.map(async (img) => {
         const imagesUplaod = await cloudinary.uploader.upload(img.tempFilePath, { folder: "AI Ecommerce/products" })
         return imagesUplaod;
       })
     )
-      res.status(400).json({
-    success: true,
-    product: result
-  })
+    res.status(400).json({
+      success: true,
+      message: "Failed to create Product"
+    })
   }
 
 
@@ -241,4 +242,3 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
 
 })
-// coalesece

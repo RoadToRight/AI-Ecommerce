@@ -1,7 +1,12 @@
 import React, { use, useState } from 'react'
-import { useGetCollectionsQuery } from '../../store/api/collectionApi'
+import { useQuery } from '@tanstack/react-query'
+import { axiosInstance } from '../libs/axiosInstance'
 
 const ProductCreateForm = () => {
+
+    const  data  = useQuery({
+        queryFn: () => axiosInstance.post("")
+    })
 
     const [Name, setName] = useState("")
     const [Description, setDescription] = useState("")
@@ -20,11 +25,10 @@ const ProductCreateForm = () => {
         setPreviewImages(previews);
     }
 
-     const handleProductCreate = async () => {
-        
+    const handleProductCreate = async () => {
+
     }
 
-    const { data: collections } = useGetCollectionsQuery();
 
     return (
         <div className='container flex flex-col gap-4 bg-blue-600 p-10'>
@@ -33,11 +37,11 @@ const ProductCreateForm = () => {
             <input type="text" value={Price} placeholder='Product Price' onChange={(e) => setPrice(e.target.value)} />
             <select name="example" id="example" defaultValue="">
                 <option value="" disabled hidden>Select Product Categories</option>
-                {
+                {/* {
                     collections?.Collections?.map((collection) => {
                         return <option key={collection.name} value="">{collection.name}</option>
                     })
-                }
+                } */}
 
             </select>
             <input type="number" value={Stock} placeholder='Product stock' onChange={(e) => setStock(e.target.value)} />

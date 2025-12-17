@@ -54,7 +54,7 @@ export const login = catchAsyncErrors(async (req, res, next) => {
 
 })
 export const getUser = (req, res, next) => {
-    const user = res.user;
+    const user = req.user;
     res.status(200).json({
         success: true,
         user

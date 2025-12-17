@@ -26,11 +26,30 @@ import SignupForm from "./components/Layout/signupForm";
 import FilterCard from "./components/Home/Filter+card";
 import ProductCreateForm from "./components/Products/productCreateForm";
 import CollectionCreateForm from "./components/Products/CollectionCreateForm";
+import { use, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "./store/slices/authSlice";
 
 const App = () => {
+
+  let dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user)
+  const authPopupOpen = useSelector((state) => state.auth.authPopupOpen)
+
+
+  useEffect(() => {
+    dispatch(getUser());
+
+  }, []);
+
+
+
   return (
     <>
-      {/* <SignupForm />  */}
+      {
+        authPopupOpen && <SignupForm />
+      }
+
 
       <ThemeProvider>
         <BrowserRouter>
@@ -44,7 +63,7 @@ const App = () => {
             <Routes>
               <Route path="/collections" element={<FilterCard />} />
               <Route path="/form" element={<ProductCreateForm />} />
-                 <Route path="/form2" element={<CollectionCreateForm />} />
+              <Route path="/form2" element={<CollectionCreateForm />} />
               <Route path="/" element={<Index />} />
               <Route path="/password/reset/:token" element={<Index />} />
               <Route path="/products" element={<Products />} />
