@@ -5,7 +5,8 @@ import { axiosInstance } from '../libs/axiosInstance'
 const ProductCreateForm = () => {
 
     const  data  = useQuery({
-        queryFn: () => axiosInstance.post("")
+        queryFn: () => axiosInstance.post(""),
+        enabled:false
     })
 
     const [Name, setName] = useState("")
