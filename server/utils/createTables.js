@@ -1,4 +1,4 @@
-import { createProductCountTrigger } from "../database/triggers.js";
+import { Junction_product_collection__count } from "../database/triggers.js";
 
 import { createUserTable } from "../models/userTable.js";
 import { createCollectionTable } from "../models/collectionTable.js";
@@ -8,6 +8,7 @@ import { createOrdersTable } from "../models/ordersTable.js";
 import { createOrderItemTable } from "../models/orderItemsTable.js";
 import { createShippingInfoTable } from "../models/shippingInfoTable.js";
 import { createPaymentTable } from "../models/paymentsTable.js";
+import { createProductCollectionsTable } from "../models/JunctionsTables/Product+Collection.js";
 
 export const createTables = async () => {
     try {
@@ -15,14 +16,15 @@ export const createTables = async () => {
         await createUserTable();
         await createCollectionTable();
         await createProductsTable();
+        await createProductCollectionsTable();
         await createProductReviews();
         await createOrdersTable();
         await createOrderItemTable();
         await createShippingInfoTable();
         await createPaymentTable();
-        
+
         // 👇 MUST BE LAST
-        await createProductCountTrigger();
+        await Junction_product_collection__count();
 
         console.log("All tables and triggers created successfully");
     } catch (error) {

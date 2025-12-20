@@ -1,6 +1,7 @@
 
 import './App.css'
-import ProductCreateForm from './components/ProductCreateForm'
+import CollectionCreateForm from './pages/CollectionCreateForm'
+import ProductCreateForm from './pages/ProductCreateForm'
 
 function App() {
 
@@ -9,6 +10,8 @@ function App() {
   return (
     <>
       <ProductCreateForm />
+      <CollectionCreateForm />
+
     </>
   )
 }
