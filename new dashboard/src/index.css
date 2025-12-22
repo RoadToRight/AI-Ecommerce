@@ -1,10 +1,28 @@
 @import "tailwindcss";
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-body{
+
+body {
   background-color: black;
+}
+
+:root {
+
+  --color-list: #AEB9E1;
+
+  --bg-main: #081028;
+
+
+  --btn-gradient-start: #CB3CFF;
+
+  --btn-gradient-end: #7F25FB;
+      --bg-secondary: #0B1739;
+}
+
+.container_main {
+  padding: 38px 40px;
 }

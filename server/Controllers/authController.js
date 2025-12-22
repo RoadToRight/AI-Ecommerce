@@ -154,3 +154,26 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 export const updateProfile = catchAsyncErrors(async (req, res, next) => {
 
 })
+
+export const getUsers = catchAsyncErrors(async (req, res, next) => {
+    const page = Number(req.query.page) || 1;
+    const limit = 20;
+    const offset = (page - 1) * limit;
+    const query = `SELECT * FROM users ORDER BY id LIMIT $1 OFFSET $2`
+    const countQuery = `SELECT COUNT(*) AS total FROM users`
+
+    const users = database.query(query, [limit, offset]);
+    const countResult = await database.query(countQuery);
+    const total = Number(countResult.rows[0].total)
+
+    res.status(200).json({
+        success: true,
+        data: users,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit)
+        }
+    })
+})

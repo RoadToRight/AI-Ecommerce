@@ -1,5 +1,5 @@
 import express from 'express';
-import { forgotPassword, getUser, login, logout, register } from '../controllers/authController.js';
+import { forgotPassword, getUser, getUsers, login, logout, register } from '../controllers/authController.js';
 import { authorizedRoles, isAuthenticated } from '../middlewares/auth.js';
 
 const app = express.Router();
@@ -9,5 +9,6 @@ app.post("/login", login);
 app.get("/me", isAuthenticated, getUser);
 app.get("/logout", isAuthenticated, authorizedRoles , logout);
 app.post("/password/reset/:resetToken", forgotPassword);
+app.get("/users",getUsers)
 
 export default app;
