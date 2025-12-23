@@ -1,24 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Button from '../components/button'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { axiosInstance } from '../libs/axiosInstance'
+import { toast } from 'react-toastify'
 
 
 const Adduser = () => {
     const [AddUserInfo, setAddUserInfo] = useState({ Email: "", Password: "", Avatar: {}, Name: "", Role: "" })
 
     const addUser = async () => {
-        let resp = await axiosInstance.post("/add", AddUserInfo)
+
+        const formData = new FormData();
+
+        formData.append("Name", AddUserInfo.Name);
+        formData.append("Email", AddUserInfo.Email);
+        formData.append("Password", AddUserInfo.Password);
+        formData.append("Role", AddUserInfo.Role);
+        if (AddUserInfo.Avatar) {
+            formData.append("Avatar", AddUserInfo.Avatar);
+        }
+        for (let pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+
+        let resp = await axiosInstance.post("/auth/register", formData)
+        return resp.data;
+
     }
-    const { mutate, isPending, data } = useMutation({ mutationKey: ["adduser"], mutationFn: addUser })
+    const { mutate, isPending, data } = useMutation({
+        mutationKey: ["adduser"], mutationFn: addUser,
+        onSuccess: (data) => {
+            toast.success(data?.message);
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message)
+        }
+    })
 
     const handleAddUser = (e) => {
         if (e.target.files) {
-            const file = e.target.files[0]
-            console.log(file)
-
-            setAddUserInfo((prev) => ({ ...prev, Avatar: {file} }))
+            const file = e.target.files[0];
+            setAddUserInfo(prev => ({
+                ...prev,
+                Avatar: file
+            }));
+            return;
         }
 
         const { name, value } = e.target;
@@ -28,50 +55,46 @@ const Adduser = () => {
         ))
     }
     const handleSubmit = (e) => {
-
-        mutate();
+        e.preventDefault();
+        mutate(AddUserInfo);
     }
-    const handleImageChange = (e) => {
-        // const file = e.target.files[0]
-        // setAddUserInfo((prev) => ({ ...prev, Avatar: file }))
-        // console.log(file)
-    }
-    useEffect(() => {
-        console.log(AddUserInfo);
 
-    }, [AddUserInfo])
+
 
 
     return (
         <AdduserSec>
             <div className="container_add_user">
                 <h1>Add User</h1>
-                <div className="input">
-                    <label>Name</label>
-                    <input type="email" name='Name' required placeholder='John' value={AddUserInfo.Name} onChange={handleAddUser} />
-                </div>
-                <div className="input">
-                    <label>Email address</label>
-                    <input type="email" name='Email' required placeholder='john@dashdark.com' value={AddUserInfo.Email} onChange={handleAddUser} />
-                </div>
-                <div className="input">
-                    <label>Password</label>
-                    <input type="password" name='Password' required placeholder='Password' value={AddUserInfo.Password} onChange={handleAddUser} />
-                </div>
-                <div className="input">
-                    <label>Role</label>
-                    <select name="Role" id="" value={AddUserInfo.Role} onChange={handleAddUser}>
-                        <option value="User">User</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-                <div className="input">
-                    <label>Avatar</label>
-                    <input type="file" accept='' name='Avatar' onChange={handleAddUser} />
-                </div>
-                <Button text={"Add User"} onClick={handleSubmit} loading={isPending} />
+                <form action="" onSubmit={handleSubmit}>
+                    <div className="input">
+                        <label>Name</label>
+                        <input type="text" name='Name' required placeholder='John' value={AddUserInfo.Name} onChange={handleAddUser} />
+                    </div>
+                    <div className="input">
+                        <label>Email address</label>
+                        <input type="email" name='Email' required placeholder='john@dashdark.com' value={AddUserInfo.Email} onChange={handleAddUser} />
+                    </div>
+                    <div className="input">
+                        <label>Password</label>
+                        <input type="password" name='Password' required placeholder='Password' value={AddUserInfo.Password} onChange={handleAddUser} />
+                    </div>
+                    <div className="input">
+                        <label>Role</label>
+                        <select name="Role" id="" value={AddUserInfo.Role} onChange={handleAddUser}>
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div className="input">
+                        <label>Avatar</label>
+                        <input type="file" accept='' name='Avatar' onChange={handleAddUser} />
+                    </div>
+                    <Button text={"Add User"} loading={isPending} />
+                </form>
             </div>
-        </AdduserSec>
+
+        </AdduserSec >
     )
 }
 

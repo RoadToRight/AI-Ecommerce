@@ -12,6 +12,8 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
+        console.log(name, email, password);
+
         return next(new ErrorHandler("Please Provide All Required Fields", 400))
     }
 

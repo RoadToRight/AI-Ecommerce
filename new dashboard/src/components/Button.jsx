@@ -3,10 +3,10 @@ import { FaArrowRight } from "react-icons/fa6";
 import styled from 'styled-components';
 import Loader from './Loader';
 
-const Button = ({ text, url, bg, color, onClick, loading = false }) => {
+const Button = ({ text, url, bg, color, onClick = () => { }, loading = false, type = "submit" }) => {
     return (
-        <Btn className='btn1' onClick={() => onClick()}>
-            <button style={{
+        <Btn className='btn1' >
+            <button onClick={(e) => onClick(e)} type={type} disabled={loading} style={{
                 background: `${bg ? bg : `linear-gradient(140deg,
       var(--btn-gradient-start) 20%,
       var(--btn-gradient-end) 68%)`}`

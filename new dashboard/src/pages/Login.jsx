@@ -28,8 +28,7 @@ const Login = () => {
     const { mutate, data, isPending, isError } = useMutation({ mutationFn: handleLoginSubmit })
 
     const handleSubmit = (e) => {
-
-        
+        e.preventDefault();
         mutate();
     }
 
