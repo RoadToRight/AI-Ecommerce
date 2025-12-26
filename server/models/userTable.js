@@ -9,7 +9,7 @@ export async function createUserTable() {
                 email VARCHAR(100) NOT NULL UNIQUE ,
                 password TEXT NOT NULL,
                 role VARCHAR(5) NOT NULL DEFAULT 'User' CHECK (role IN ('User', 'Admin')),
-                avatar JSONB DEFAULT NULL,
+                avatar JSONB DEFAULT '{"url": "https://www.w3schools.com/howto/img_avatar.png"}',
                 reset_password_token TEXT DEFAULT NULL,
                 reset_password_expire TIMESTAMP DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

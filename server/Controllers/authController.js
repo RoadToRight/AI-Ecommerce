@@ -9,10 +9,8 @@ import crypto from "crypto"
 
 export const register = catchAsyncErrors(async (req, res, next) => {
 
-    const { name, email, password } = req.body;
-
+    const { name, email, password, role } = req.body;
     if (!name || !email || !password) {
-        console.log(name, email, password);
 
         return next(new ErrorHandler("Please Provide All Required Fields", 400))
     }
@@ -27,7 +25,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await database.query(`INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *`, [name, email, hashedPassword]);
+    const user = await database.query(`INSERT INTO users (name,email,password,role) VALUES ($1,$2,$3,$4) RETURNING *`, [name, email, hashedPassword, role]);
 
     // SQL INJECTION
 
@@ -164,13 +162,13 @@ export const getUsers = catchAsyncErrors(async (req, res, next) => {
     const query = `SELECT * FROM users ORDER BY id LIMIT $1 OFFSET $2`
     const countQuery = `SELECT COUNT(*) AS total FROM users`
 
-    const users = database.query(query, [limit, offset]);
+    const users = await database.query(query, [limit, offset]);
     const countResult = await database.query(countQuery);
     const total = Number(countResult.rows[0].total)
 
     res.status(200).json({
         success: true,
-        data: users,
+        data: users.rows,
         pagination: {
             page,
             limit,

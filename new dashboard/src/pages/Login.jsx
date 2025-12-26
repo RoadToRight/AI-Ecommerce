@@ -6,7 +6,7 @@ import { axiosInstance } from '../libs/axiosInstance'
 import { toast } from 'react-toastify'
 
 const Login = () => {
-    const [LoginInfo, setLoginInfo] = useState({ Email: "", Password: "" })
+    const [LoginInfo, setLoginInfo] = useState({ email: "", password: "" })
 
 
     const handleLogin = (e) => {
@@ -18,14 +18,19 @@ const Login = () => {
         ))
     }
     const handleLoginSubmit = async () => {
-        try {
-            let resp = await axiosInstance.post("/auth/login", LoginInfo)
-            toast.success(resp?.data?.message || "Login Failed")
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Login Failed")
-        }
+
+        let resp = await axiosInstance.post("/auth/login", LoginInfo)
+        return resp.data;
     }
-    const { mutate, data, isPending, isError } = useMutation({ mutationFn: handleLoginSubmit })
+    const { mutate, data, isPending, isError } = useMutation({
+        mutationFn: handleLoginSubmit,
+        onSuccess: (data) => {
+            toast.success(data?.message)
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message)
+        }
+    })
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -38,11 +43,11 @@ const Login = () => {
                 <h1>Login</h1>
                 <div className="input">
                     <label>Email address</label>
-                    <input type="email" name='Email' required placeholder='john@dashdark.com' value={LoginInfo.Email} onChange={handleLogin} />
+                    <input type="email" name='email' required placeholder='john@dashdark.com' value={LoginInfo.Email} onChange={handleLogin} />
                 </div>
                 <div className="input">
                     <label>Password</label>
-                    <input type="password" name='Password' required placeholder='Password' value={LoginInfo.Password} onChange={handleLogin} />
+                    <input type="password" name='password' required placeholder='Password' value={LoginInfo.Password} onChange={handleLogin} />
                 </div>
                 <h6><a href="">Forgot Password?</a></h6>
                 <Button text={"Login"} onClick={handleSubmit} loading={isPending} />

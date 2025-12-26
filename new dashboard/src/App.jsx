@@ -1,29 +1,43 @@
 
-import Login from './pages/Login'
 import './App.css'
-import Sidebar from './components/Sidebar'
 import { useAppState } from './customHooks/useAppState'
-import CollectionCreateForm from './pages/CollectionCreateForm'
-import ProductCreateForm from './pages/ProductCreateForm'
-import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom"
-import Adduser from './pages/Adduser'
-import Content from './components/content'
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
+import { useEffect } from 'react'
+import { axiosInstance } from './libs/axiosInstance'
+import { useAppDispatch } from './customHooks/useAppDispatch'
+import Loader from './components/Loader'
+import ProtectedRoute from './components/ProtectedRoute'
+import Layout from './components/Layout'
+import Login from './pages/Login'
 
 function App() {
 
-  const { user, isAuthenticated } = useAppState()
+  const { user, isAuthenticated, loading } = useAppState();
+  const dispatch = useAppDispatch();
+  const getUser = async () => {
+    try {
+      const response = await axiosInstance.get("/auth/me");
+      dispatch({ type: "getUser", payload: response.data.user })
+
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+  useEffect(() => {
+    getUser();
+  }, [])
+
+  if (loading) return <Loader />
 
   return (
     <Router>
-      {/* <ProductCreateForm />
-      <CollectionCreateForm /> */}
-
       <Routes>
-
-        <Route path='/' element={!user && !isAuthenticated ? <div style={{ display: `flex` }}><Sidebar /><Content /></div> : <Navigate to={"/login"} />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/add/user' element={<Adduser />} />
+        <Route path='/*' element={<ProtectedRoute><Layout /></ProtectedRoute>} />
+        <Route path='/login' element={<Login />}/>
       </Routes>
       <ToastContainer />
     </Router>

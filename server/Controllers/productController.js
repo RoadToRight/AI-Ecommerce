@@ -181,6 +181,38 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   })
 })
 
+export const MongoFetchAllProducts = catchAsyncErrors(async (req, res, next) => {
+
+  const { price, availablity, category, search } = req.body;
+  let conditions = {};
+
+  if (availablity === "in-stock") {
+    conditions.availability = "in-stock"
+  } else if (availablity === "out-of-stock") {
+    conditions.availability = "out-of-stock"
+  }
+  if (price) {
+    const [minPrice, maxPrice] = split(price, "-");
+    conditions.price = { $gt: Number(minPrice), $lte: Number(maxPrice) }
+  }
+  if (category) {
+    conditions.category = { $in: category }
+  }
+  if (search) {
+    conditions.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } }
+    ]
+  }
+
+
+  await ProductModel.find(conditions)
+  res.status(200).json({
+    success: true,
+    products
+  });
+})
+
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
   const { name, description, price, category = "All", stock = 0 } = req.body;
@@ -218,7 +250,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
   try {
     const Product = await database.query(`
       INSERT INTO products (name, description, price, category, stock, images,created_by) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *
-    `, [name, description, price, category, stock, JSON.stringify(Images),req.user.id])
+    `, [name, description, price, category, stock, JSON.stringify(Images), req.user.id])
     res.status(201).json({
       success: true,
       product: Product.rows[0],

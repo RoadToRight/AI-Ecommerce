@@ -1,8 +1,13 @@
 export function appReducer(state, action) {
 
     switch (action.type) {
-        case "SET_USER":
-            return { ...state, user: action.payload }
+        case "getUser":
+            return {
+                ...state,
+                user: action.payload,
+                isAuthenticated: true,
+                loading: false
+            }
         default:
             if (import.meta.env.MODE === "development") {
                 throw new Error(`Unhandled action type: ${action.type}`)
@@ -11,3 +16,4 @@ export function appReducer(state, action) {
     }
 
 }
+
