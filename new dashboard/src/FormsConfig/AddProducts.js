@@ -7,9 +7,9 @@ export const addProduct = [
             { label: "Price", type: "number", name: "price", required: true, placeholder: "Product Price" },
             { label: "Stock", type: "number", name: "stock", required: true, placeholder: "Available" },
             {
-                label: "Role",
+                label: "Collections",
                 type: "select",
-                name: "role",
+                name: "collections",
                 options: [{ label: "User", value: "User" }, { label: "Admin", value: "Admin" }]
             },
         ]

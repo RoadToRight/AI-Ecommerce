@@ -9,6 +9,10 @@ import ProductCreateForm from '../pages/ProductCreateForm'
 import Form from './Form'
 import { addUser } from '../FormsConfig/AddUser'
 import { addCollection } from '../FormsConfig/AddCollection'
+import { addProduct } from '../FormsConfig/AddProducts'
+import AddUser from '../pages/AddUser'
+import AddCollection from '../pages/AddCollection'
+import AddProduct from '../pages/AddProduct'
 
 const Content = () => {
 
@@ -18,11 +22,10 @@ const Content = () => {
 
             <Routes>
                 <Route path="users" element={<Users />} />
-                <Route path="add/user" element={<Form data={addUser} btnText={"Add User"} mutationKey={"addUser"} reqType={"post"} reqUrl={"/auth/register"} />
-                } />
+                <Route path="add/user" element={<AddUser />} />
                 <Route path="settings" element={<UpdateUser />} />
-                <Route path="collections/add" element={<Form data={addCollection} btnText={"Create Collection"} mutationKey={"addCollection"} reqType={"post"} reqUrl={"/collections/create"} />} />
-                <Route path="products/add" element={<ProductCreateForm />} />
+                <Route path="collections/add" element={<AddCollection />} />
+                <Route path="products/add" element={<AddProduct />} />
             </Routes>
         </ContentDiv>
     )

@@ -6,31 +6,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios"
 import axios from "axios";
 
-// const authSlice = createSlice({
-//   name: "auth",
-//   initialState: {
-//     authUser: null,
-//     isSigningUp: false,
-//     isLoggingIn: false,
-//     isUpdatingProfile: false,
-//     isUpdatingPassword: false,
-//     isRequestingForToken: false,
-//     isCheckingAuth: true,
-//   },
-//   extraReducers: (builder) => {},
-// });
-
-// export default authSlice.reducer;
-
-
 
 
 const initialState = {
   isLoggedIn: false,
   isLoggedOut: true,
   isCheckingAuth: true,
-  user: [],
+  user: {},
   authPopupOpen: false,
+  accountSidebar: false
 }
 
 
@@ -52,15 +36,19 @@ export const Register = createAsyncThunk(
 export const Login = createAsyncThunk(
   "auth/login",
   async (data) => {
-    const res = await axiosInstance.post("/auth/login", data);
-    return res.data;
-
+    try {
+      const res = await axiosInstance.post("/auth/login", data);
+      toast.success(res?.data?.message)
+      return res.data;
+    } catch (error) {
+      toast.error(error?.response?.data.message || error.message || "Login Failed!")
+    }
   }
 )
 
 export const getUser = createAsyncThunk(
   "auth/getUser",
-  async (_,{rejectWithValue}) => {
+  async (_, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get("/auth/me")
       return res.data;
@@ -78,6 +66,9 @@ export const authSlice = createSlice({
   reducers: {
     toggleAuthPopup: (state, action) => {
       state.authPopupOpen = !state.authPopupOpen
+    },
+    toggleAccountSidebar: (state, action) => {
+      state.accountSidebar = !state.accountSidebarc
     }
   },
 
@@ -114,10 +105,11 @@ export const authSlice = createSlice({
       }).
       addCase(getUser.pending, (state, action) => {
         state.isLoggedIn = false
-    
+
       }).
       addCase(getUser.fulfilled, (state, action) => {
         state.isLoggedIn = true
+        state.accountSidebar = true
         state.user = action.payload.user
         toast.success(action.payload?.message || "Get user Successfully");
       }).
@@ -130,5 +122,5 @@ export const authSlice = createSlice({
 })
 
 export default authSlice.reducer;
-export const { toggleAuthPopup } = authSlice.actions
+export const { toggleAuthPopup, toggleAccountSidebar } = authSlice.actions
 // export const { } = authSlice.actions;

@@ -5,6 +5,8 @@ import orderReducer from "./slices/orderSlice";
 import { productsApi } from "./api/productsApi";
 import productReducer from "./slices/productSlice";
 import { collectionApi } from "./api/collectionApi";
+import SearchSlice from "./slices/searchSlice";
+import toggleFilterSlice from "./slices/filterSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ export const store = configureStore({
     cart: cartReducer,
     order: orderReducer,
     products: productReducer,
+    search: SearchSlice,
+    filter: toggleFilterSlice,
     [productsApi.reducerPath]: productsApi.reducer,
     [collectionApi.reducerPath]: collectionApi.reducer
   },

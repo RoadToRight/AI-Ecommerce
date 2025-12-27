@@ -5,10 +5,9 @@ import { ToastContainer } from "react-toastify";
 // Layout Components
 import Navbar from "./components/Layout/Navbar";
 import Sidebar from "./components/Layout/Sidebar";
-import SearchOverlay from "./components/Layout/SearchOverlay";
+import Search from "./components/Layout/Search";
 import CartSidebar from "./components/Layout/CartSidebar";
 import ProfilePanel from "./components/Layout/ProfilePanel";
-import LoginModal from "./components/Layout/LoginModal";
 import Footer from "./components/Layout/Footer";
 
 // Pages
@@ -23,12 +22,14 @@ import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import SignupForm from "./components/Layout/signupForm";
-import FilterCard from "./components/Home/Filter+card";
 import ProductCreateForm from "./components/Products/productCreateForm";
 import CollectionCreateForm from "./components/Products/CollectionCreateForm";
 import { use, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./store/slices/authSlice";
+import SingleProduct from "./components/Layout/SingleProduct";
+import Collection from "./components/Layout/Collection";
+import Account from "./components/Layout/Account";
 
 const App = () => {
 
@@ -56,17 +57,16 @@ const App = () => {
           <div className="min-h-screen bg-background">
             <Navbar />
             <Sidebar />
-            <SearchOverlay />
+            <Search />
             <CartSidebar />
-            <ProfilePanel />
-            <LoginModal />
+            <Account />
             <Routes>
-              <Route path="/collections" element={<FilterCard />} />
+              <Route path="/collections" element={<Collection />} />
               <Route path="/form" element={<ProductCreateForm />} />
               <Route path="/form2" element={<CollectionCreateForm />} />
               <Route path="/" element={<Index />} />
               <Route path="/password/reset/:token" element={<Index />} />
-              <Route path="/products" element={<Products />} />
+              <Route path="/products" element={<SingleProduct />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/orders" element={<Orders />} />
