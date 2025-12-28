@@ -1,4 +1,3 @@
-import { Junction_product_collection__count } from "../database/triggers.js";
 
 import { createUserTable } from "../models/userTable.js";
 import { createCollectionTable } from "../models/collectionTable.js";
@@ -23,8 +22,7 @@ export const createTables = async () => {
         await createShippingInfoTable();
         await createPaymentTable();
 
-        // 👇 MUST BE LAST
-        await Junction_product_collection__count();
+        // 👇 MUST BE LAST: triggers & initial population
 
         console.log("All tables and triggers created successfully");
     } catch (error) {

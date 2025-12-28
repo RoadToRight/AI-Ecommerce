@@ -13,15 +13,19 @@ const AddProduct = () => {
         return response.data;
     }
     const { data, isLoading, isError } = useQuery({ queryKey: ["collections"], queryFn: fetchCollections, refetchOnWindowFocus: false, refetchOnReconnect: false })
-    console.log(data);
-    
-   const CollectionOptions = data?.Collections.map(({name,id}) => {
-        return {label:name,value:id}
+
+    const CollectionOptions = data?.Collections.map(({ name, id }) => {
+        return { label: name, value: id }
     })
+    let updateAddProduct = [];
+    //  updateAddProduct = addProduct[0]?.fields?.map((x) => {
+    //    return{MainHead:addProduct[0].MainHead, x.name === "collections" ? {...x,options:x.options = CollectionOptions} : x}
+    // })
+    console.log(updateAddProduct);
 
     return (
         <div>
-            <Form data={addProduct} btnText={"Create Collection"} mutationKey={"addProduct"} reqType={"post"} reqUrl={"/collections/create"} />
+            <Form data={updateAddProduct} btnText={"Create Product"} mutationKey={"addProduct"} reqType={"post"} reqUrl={"/collections/create"} />
         </div>
     )
 }

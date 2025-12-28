@@ -31,7 +31,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
 
     generateJwtToken(user.rows[0], res, "Registered Successfully", 201);
 
-})
+})  
 export const login = catchAsyncErrors(async (req, res, next) => {
 
     const { email, password } = req.body;

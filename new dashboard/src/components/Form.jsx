@@ -83,7 +83,7 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
                                 <form key={MainHead} action="" onSubmit={handleForm}>
 
                                     {
-                                        fields.map(({ label, name, type, accept, options, placeholder, required, multiple }) => {
+                                        fields?.map(({ label, name, type, accept, options, placeholder, required, multiple }) => {
                                             return (<div key={label + name} className="input">
                                                 <label>{label}</label>
                                                 {type === "select" ?
