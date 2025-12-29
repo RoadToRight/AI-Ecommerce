@@ -18,6 +18,9 @@ const AddProduct = () => {
         return { label: name, value: id }
     })
     let updateAddProduct = [];
+    updateAddProduct.map((x) => {
+        
+    })
     //  updateAddProduct = addProduct[0]?.fields?.map((x) => {
     //    return{MainHead:addProduct[0].MainHead, x.name === "collections" ? {...x,options:x.options = CollectionOptions} : x}
     // })
