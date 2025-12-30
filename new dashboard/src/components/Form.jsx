@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useMutation } from '@tanstack/react-query'
 import { axiosInstance } from '../libs/axiosInstance'
@@ -11,6 +11,22 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
     const [Previews, setPreviews] = useState([])
 
     const handleChange = (e) => {
+        console.log(FormInfo);
+
+        if (e.target.dataset.multi_options) {
+
+            const { name, value } = e.target;
+            setFormInfo((prev) => ({
+
+                ...prev,
+                [name]: Array.isArray(prev[name])
+                    ? Array.from(new Set([...prev[name], value]))
+                    : [value]
+
+
+            }))
+            return;
+        }
 
         const { name, value } = e.target;
 
@@ -39,6 +55,13 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
         e.preventDefault();
         const Form = new FormData();
         for (const key in FormInfo) {
+            const value = FormInfo[key];
+
+            if (Array.isArray(value)) {
+                value.forEach((value) => {
+                    Form.append(key, value)
+                })
+            }
             Form.append(key, FormInfo[key])
         }
         mutate(Form)
@@ -52,6 +75,8 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
         return response.data;
 
     }
+
+
     const { mutate, isPending } = useMutation({
         mutationKey: [mutationKey], mutationFn: mutationFn,
         onSuccess: (data) => {
@@ -68,9 +93,16 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
 
         const files = Array.from(e.target.files);
 
-        let img = files.map((img) => new URL.createObjectURL(files))
+        let img = files.map((img) => URL.createObjectURL(img))
         setPreviews(img)
     }
+
+    useEffect(() => {
+        return () => {
+            Previews.forEach((imgPrev) => URL.revokeObjectURL(imgPrev))
+        }
+    }, [Previews])
+
 
     return (
         <FormSec>
@@ -83,11 +115,11 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
                                 <form key={MainHead} action="" onSubmit={handleForm}>
 
                                     {
-                                        fields?.map(({ label, name, type, accept, options, placeholder, required, multiple }) => {
+                                        fields?.map(({ label, name, type, accept, options, placeholder, required, multiple, multiple_options }) => {
                                             return (<div key={label + name} className="input">
                                                 <label>{label}</label>
                                                 {type === "select" ?
-                                                    <select name={name} id="" value={FormInfo[name] || ""} onChange={handleChange}>
+                                                    <select name={name} data-multi_options={multiple_options} id="" value={FormInfo[name] || []} onChange={handleChange}>
                                                         {options?.map(({ label, value }) => {
                                                             return <option value={value}>{label}</option>
                                                         })}

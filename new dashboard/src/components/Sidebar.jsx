@@ -8,10 +8,22 @@ import { IoSearchOutline } from "react-icons/io5";
 import Button from './button';
 import { useAppState } from '../customHooks/useAppState';
 import { Link } from 'react-router-dom';
+import { axiosInstance } from '../libs/axiosInstance';
+import { toast } from 'react-toastify';
 
 const Sidebar = () => {
 
-    const { user } = useAppState()
+    const { user } = useAppState();
+
+    const handleLogout = async () => {
+        try {
+            const response = await axiosInstance.get("/auth/logout");
+            toast.success("Logged out successfully");
+            return response.data;
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message || "Logout failed");
+        }
+    }
 
     return (
         <Aside className='bg-[#081028]'>
@@ -34,6 +46,7 @@ const Sidebar = () => {
                             <li className='main_li'>
                                 <span className='main_sub_li'> <span>Products</span><IoChevronForward size={12} /></span>
                                 <span className='main_sub_li'> <span>All Products</span></span>
+                                <Link to={"/products/add"}><span className='main_sub_li'> <span>Add Products</span></span></Link>
                             </li>
                         </ul>
                     </li>
@@ -50,7 +63,7 @@ const Sidebar = () => {
                         <IoChevronForward size={12} /></span>
                     </li>
                 </ul>
-                <Button text={"Logout"} />
+                <Button text={"Logout"} onClick={handleLogout} />
 
             </div>
         </Aside>

@@ -8,6 +8,13 @@ export function appReducer(state, action) {
                 isAuthenticated: true,
                 loading: false
             }
+        case "getUserFailed":
+            return {
+                ...state,
+                user: [],
+                isAuthenticated: false,
+                loading: false
+            }
         default:
             if (import.meta.env.MODE === "development") {
                 throw new Error(`Unhandled action type: ${action.type}`)

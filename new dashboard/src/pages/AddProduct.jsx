@@ -6,7 +6,6 @@ import { axiosInstance } from '../libs/axiosInstance'
 
 const AddProduct = () => {
 
-    const [collectionName, setcollectionName] = useState()
     const fetchCollections = async () => {
         const response = await axiosInstance.get("/collections/all")
 
@@ -18,17 +17,20 @@ const AddProduct = () => {
         return { label: name, value: id }
     })
     let updateAddProduct = [];
-    updateAddProduct.map((x) => {
-        
+    updateAddProduct = addProduct.map((x) => {
+        return {
+            ...x,
+            fields: x.fields.map((field) => {
+                return field.name === "collections" ? { ...field, options: CollectionOptions } : field
+            })
+        }
     })
-    //  updateAddProduct = addProduct[0]?.fields?.map((x) => {
-    //    return{MainHead:addProduct[0].MainHead, x.name === "collections" ? {...x,options:x.options = CollectionOptions} : x}
-    // })
-    console.log(updateAddProduct);
+    console.log();
+
 
     return (
         <div>
-            <Form data={updateAddProduct} btnText={"Create Product"} mutationKey={"addProduct"} reqType={"post"} reqUrl={"/collections/create"} />
+            <Form data={updateAddProduct} btnText={"Create Product"} PreviewMode={true} mutationKey={"addProduct"} reqType={"post"} reqUrl={"/products/create"} />
         </div>
     )
 }

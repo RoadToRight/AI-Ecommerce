@@ -4,10 +4,11 @@ import Button from '../components/button'
 import { useMutation } from '@tanstack/react-query'
 import { axiosInstance } from '../libs/axiosInstance'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
     const [LoginInfo, setLoginInfo] = useState({ email: "", password: "" })
-
+    const navigate = useNavigate();
 
     const handleLogin = (e) => {
 
@@ -18,7 +19,7 @@ const Login = () => {
         ))
     }
     const handleLoginSubmit = async () => {
-
+        
         let resp = await axiosInstance.post("/auth/login", LoginInfo)
         return resp.data;
     }
@@ -26,6 +27,7 @@ const Login = () => {
         mutationFn: handleLoginSubmit,
         onSuccess: (data) => {
             toast.success(data?.message)
+                navigate("/")
         },
         onError: (error) => {
             toast.error(error.response?.data?.message)

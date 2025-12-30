@@ -1,7 +1,7 @@
 
 import './App.css'
 import { useAppState } from './customHooks/useAppState'
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 import { useEffect } from 'react'
 import { axiosInstance } from './libs/axiosInstance'
@@ -24,6 +24,7 @@ function App() {
       return response.data;
     } catch (error) {
       console.log(error);
+      dispatch({ type: "getUserFailed" })
 
     }
   }
@@ -37,7 +38,7 @@ function App() {
     <Router>
       <Routes>
         <Route path='/*' element={<ProtectedRoute><Layout /></ProtectedRoute>} />
-        <Route path='/login' element={<Login />}/>
+        <Route path='/login' element={!isAuthenticated && !user ? <Login /> : <Navigate to="/" />} />
       </Routes>
       <ToastContainer />
     </Router>
