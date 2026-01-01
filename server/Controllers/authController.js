@@ -6,6 +6,7 @@ import { generateJwtToken } from "../utils/generateJwtToken.js";
 import { generateResetPasswordToken } from "../utils/generateResetPasswordToken.js";
 import { generateEmailTemplate } from "../utils/generateForgetPasswordEmailTemplate.js";
 import crypto from "crypto"
+import { log } from "console";
 
 export const register = catchAsyncErrors(async (req, res, next) => {
 
@@ -35,17 +36,19 @@ export const register = catchAsyncErrors(async (req, res, next) => {
 export const login = catchAsyncErrors(async (req, res, next) => {
 
     const { email, password } = req.body;
-
+    
     if (!email || !password) {
         return next(new ErrorHandler("Please Provide All Required Fields", 400));
     }
 
     const user = await database.query(`SELECT * FROM users WHERE email = $1 LIMIT 1`, [email]);
-    if (!user.rows.length === 0) {
+    if (user.rows.length === 0) {
         return next(new ErrorHandler("Invalid Email or Password", 401));
     }
+    
 
-    const isPasswordMatch = await bcrypt.compare(password, user.rows[0].password);
+    const isPasswordMatch = await bcrypt.compare(password, user.rows[0]?.password);
+
     if (!isPasswordMatch) {
         return next(new ErrorHandler("Invalid Email or Password", 401));
     }

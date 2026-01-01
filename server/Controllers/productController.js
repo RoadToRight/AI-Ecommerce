@@ -7,20 +7,21 @@ import { createProductWithCollections } from "../services/product.service.js";
 
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
-  const { price, availability, ratings, category, search } = req.query;
+  const { price, availability = "in-stock", ratings, category, search, skip = 0, limit = 20 } = req.query;
   const conditions = [];
   let index = 1;
-  let values = []
+  let values = [];
+
 
   if (availability === 'in-stock') {
-    conditions.push(stock > 0)
+    conditions.push(`stock > 0`)
   } else if (availability === 'out-of-stock') {
-    conditions.push(stock = 0)
+    conditions.push(`stock = 0`)
   }
 
   if (price) {
-    const [minPrice, maxPrice] = split(price, "-");
-    conditions.push(`price BETWEEN ${index} AND ${index + 1}`)
+    const [minPrice, maxPrice] = price.split("-")
+    conditions.push(`price BETWEEN $${index} AND $${index + 1}`)
     values.push(minPrice, maxPrice)
   }
 
@@ -36,24 +37,29 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   }
   if (search) {
     let query = `SELECT * FROM products WHERE name ILIKE ${index + 1} OR description ILIKE ${index + 1}`;
-    conditions.push(`name ILIKE ${index + 1} OR description ILIKE ${index + 1}`)
+    // conditions.push(`name ILIKE ${index + 1} OR description ILIKE ${index + 1}`)
+    conditions.push(query)
     values.push(`%${search}%`, `%${search}%`)
   }
   const whereClause = conditions.length
     ? `WHERE ${conditions.join(" AND ")}`
     : "";
 
-  // Get count of filtered products
 
-  const totalProductsResult = await database.query(`SELECT COUNT(*) FROM products ${whereClause}`, values)
+
+  // Get count of filtered products
+  const productQuery = `SELECT * FROM products ${whereClause}`
+  const countQuery = `SELECT COUNT(*) FROM products ${whereClause}`
+  const Products = await database.query(productQuery, values)
+  const totalProductsResult = await database.query(countQuery, values)
   const totalProducts = parseInt(totalProductsResult.rows[0].count);
 
   res.status(200).json({
     success: true,
-    totalProducts
+    Products: Products.rows,
+    totalProducts,
   })
 })
-
 
 export const deleteProducts = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
@@ -98,10 +104,11 @@ export const updateProducts = catchAsyncErrors(async (req, res) => {
   });
 });
 
-
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
-  const { name, description, price, stock = 0, collectionss = [] } = req.body;
-  const collections = JSON.parse(req.body.collections) || [];
+  const { name, description, price, stock = 0, collections = [] } = req.body;
+  console.log(req.body);
+
+  const collectionsnew = JSON.parse(req.body.collections) || [];
 
   // 1️⃣ Validate required fields
   if (!name || !description || !price) {
@@ -140,7 +147,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
       stock,
       images: JSON.stringify(uploadedImages),
       created_by: req.user.id,
-      collections // array of collection names from frontend, e.g. ["Electronics", "Sale"]
+      collectionsnew // array of collection names from frontend, e.g. ["Electronics", "Sale"]
     });
 
     res.status(201).json({

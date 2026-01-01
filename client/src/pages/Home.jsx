@@ -5,6 +5,7 @@ import ProductSlider from "../components/Home/ProductSlider";
 import FeatureSection from "../components/Home/FeatureSection";
 import NewsletterSection from "../components/Home/NewsletterSection";
 import { useSelector } from "react-redux";
+import HomeProductSlider from "../components/Products/HomeProductSlider";
 
 const Index = () => {
   // const { topRatedProducts, newProducts } = useSelector(
@@ -14,8 +15,9 @@ const Index = () => {
     <div className="min-h-screen">
       <HeroSlider />
       <div className="container mx-auto px-4 pt-20">
+        <HomeProductSlider />
+
         <CategoryGrid />
-    
         <FeatureSection />
         <NewsletterSection />
       </div>

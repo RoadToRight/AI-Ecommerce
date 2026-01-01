@@ -11,7 +11,6 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
     const [Previews, setPreviews] = useState([])
 
     const handleChange = (e) => {
-        console.log(FormInfo);
 
         if (e.target.dataset.multi_options) {
 
@@ -32,6 +31,8 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
 
         if (e.target.files) {
             const files = e.target.files;
+            console.log(files);
+
             if (!e.target.multiple) {
                 setFormInfo((prev) => ({
                     ...prev,
@@ -51,22 +52,57 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
             [name]: value
         }))
     }
+    // const handleForm = (e) => {
+    //     e.preventDefault();
+    //     const Form = new FormData();
+    //     for (const key in FormInfo) {
+    //         const value = FormInfo[key];
+    //         Form.append(key, value)
+    //     }
+    //     mutate(Form)
+    // }
+
+
+
+
+    useEffect(() => {
+
+        console.log(FormInfo);
+
+
+    }, [FormInfo]);
+
+
+
     const handleForm = (e) => {
         e.preventDefault();
-        const Form = new FormData();
+        const formData = new FormData();
+
+
         for (const key in FormInfo) {
             const value = FormInfo[key];
 
-            if (Array.isArray(value)) {
-                value.forEach((value) => {
-                    Form.append(key, value)
-                })
+            if (value instanceof FileList) {
+                Array.from(value).forEach((file) => {
+                    formData.append(key, file);
+                });
             }
-            Form.append(key, FormInfo[key])
+            else if (Array.isArray(value)) {
+                formData.append(key, JSON.stringify(value));
+            }
+            else {
+                formData.append(key, value);
+            }
         }
-        mutate(Form)
-    }
+
+
+
+        mutate(formData);
+    };
+
     const mutationFn = async (Data) => {
+        console.log(FormInfo);
+
         for (const [key, value] of Data.entries()) {
             console.log(key, value);
         }
@@ -119,7 +155,7 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
                                             return (<div key={label + name} className="input">
                                                 <label>{label}</label>
                                                 {type === "select" ?
-                                                    <select name={name} data-multi_options={multiple_options} id="" value={FormInfo[name] || []} onChange={handleChange}>
+                                                    <select name={name} multiple={multiple_options} data-multi_options={multiple_options} id="" value={FormInfo[name] || []} onChange={handleChange}>
                                                         {options?.map(({ label, value }) => {
                                                             return <option value={value}>{label}</option>
                                                         })}

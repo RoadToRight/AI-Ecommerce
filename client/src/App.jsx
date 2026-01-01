@@ -7,7 +7,6 @@ import Navbar from "./components/Layout/Navbar";
 import Sidebar from "./components/Layout/Sidebar";
 import Search from "./components/Layout/Search";
 import CartSidebar from "./components/Layout/CartSidebar";
-import ProfilePanel from "./components/Layout/ProfilePanel";
 import Footer from "./components/Layout/Footer";
 
 // Pages
@@ -22,8 +21,6 @@ import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import SignupForm from "./components/Layout/signupForm";
-import ProductCreateForm from "./components/Products/productCreateForm";
-import CollectionCreateForm from "./components/Products/CollectionCreateForm";
 import { use, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./store/slices/authSlice";
@@ -59,11 +56,9 @@ const App = () => {
             <Sidebar />
             <Search />
             <CartSidebar />
-            <Account />
+            {/* <Account /> */}
             <Routes>
               <Route path="/collections" element={<Collection />} />
-              <Route path="/form" element={<ProductCreateForm />} />
-              <Route path="/form2" element={<CollectionCreateForm />} />
               <Route path="/" element={<Index />} />
               <Route path="/password/reset/:token" element={<Index />} />
               <Route path="/products" element={<SingleProduct />} />

@@ -7,17 +7,24 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoSearchOutline } from "react-icons/io5";
 import Button from './button';
 import { useAppState } from '../customHooks/useAppState';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../libs/axiosInstance';
 import { toast } from 'react-toastify';
+import { useAppDispatch } from '../customHooks/useAppDispatch';
 
 const Sidebar = () => {
 
     const { user } = useAppState();
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
 
     const handleLogout = async () => {
+
         try {
             const response = await axiosInstance.get("/auth/logout");
+            dispatch({ type: "getUserFailed" })
+            navigate("/login")
             toast.success("Logged out successfully");
             return response.data;
         } catch (error) {

@@ -4,16 +4,23 @@ export function appReducer(state, action) {
         case "getUser":
             return {
                 ...state,
-                user: action.payload,
+                user: action.payload || [],
                 isAuthenticated: true,
                 loading: false
             }
         case "getUserFailed":
             return {
                 ...state,
-                user: [],
+                user: null,
                 isAuthenticated: false,
                 loading: false
+            }
+        case "loggedIn":
+            return {
+                ...state,
+                isAuthenticated: true,
+                loading: false,
+                user: action.payload || []
             }
         default:
             if (import.meta.env.MODE === "development") {

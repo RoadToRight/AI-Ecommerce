@@ -2,9 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import { CiFilter } from "react-icons/ci";
 import { useDispatch } from 'react-redux';
+import useApi from '../../customHooks/useApi';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import ProductCard from '../Products/ProductCard';
 
 const Collection = () => {
     let dispatch = useDispatch();
+    const [products, setProducts] = useState([1, 2, 3, 4, 5])
+    const API = useApi()
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const data = await API({ type: "get", url: "/products/all" })
+            console.log(data)
+            setProducts(data.Products)
+        }
+        fetchProducts()
+    }, [API])
+
+    useEffect(() => {
+        console.log(products);
+
+    }, [products])
+
+
     return (
         <CollectionPage>
             <div className="container">
@@ -26,7 +47,11 @@ const Collection = () => {
                 </div>
 
                 <div className="products">
-
+                    {products?.map(({ name, price, description, images }) => {
+                        return (
+                            <ProductCard name={name} price={price} description={description} img={images} />
+                        )
+                    })}
                 </div>
             </div>
         </CollectionPage>
@@ -37,6 +62,10 @@ export default Collection
 
 const CollectionPage = styled.div`
 padding: 30px 0px;
+.products{
+    display: flex;
+    gap: 20px;
+}
     .title{
         font-size: 34px;
         font-weight: 700;

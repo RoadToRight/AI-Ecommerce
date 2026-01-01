@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AppProvider } from './contexts/AppContext.jsx'
 
 
+
 export const AppWrapper = () => {
   const queryClient = new QueryClient();
 

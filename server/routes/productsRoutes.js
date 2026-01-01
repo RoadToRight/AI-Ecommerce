@@ -6,5 +6,5 @@ const app = express.Router();
 
 app.get("/all", fetchAllProducts)
 app.post("/create", isAuthenticated, authorizedRoles("Admin"), createProduct)
-app.delete("/delete/:id",deleteProducts)
+app.delete("/delete/:id", deleteProducts)
 export default app;

@@ -7,8 +7,8 @@ const app = express.Router();
 app.post("/register", register);
 app.post("/login", login);
 app.get("/me", isAuthenticated, getUser);
-app.get("/logout", isAuthenticated, authorizedRoles , logout);
+app.get("/logout", isAuthenticated, logout);
 app.post("/password/reset/:resetToken", forgotPassword);
-app.get("/users",getUsers)
+app.get("/users", getUsers)
 
 export default app;

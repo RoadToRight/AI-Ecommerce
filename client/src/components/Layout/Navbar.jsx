@@ -7,6 +7,7 @@ import { IoMdCart } from "react-icons/io";
 import { useState } from "react";
 import { toggleSearchAction } from "../../store/slices/searchSlice";
 import { RiAccountCircle2Line } from "react-icons/ri";
+import { Link } from "react-router-dom"
 
 const Navbar = () => {
   let dispatch = useDispatch();
@@ -22,6 +23,7 @@ const Navbar = () => {
     <div className="logo"><img src="/Logo.png" alt="" /></div>
     <ul className="nav_list">
       <li onClick={() => dispatch(toggleAuthPopup())} className="cursor-pointer">Account</li>
+      <Link to={"/collections"}><li className="cursor-pointer">Collections</li></Link>
       <li onClick={() => dispatch(toggleSearchAction())}><IoSearchOutline cursor={"pointer"} /></li>
       <li ><IoMdCart cursor={"pointer"} /></li>
       <li onClick={handleAccount}><RiAccountCircle2Line cursor={"pointer"} /></li>

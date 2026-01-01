@@ -25,8 +25,7 @@ const AddProduct = () => {
             })
         }
     })
-    console.log();
-
+    
 
     return (
         <div>

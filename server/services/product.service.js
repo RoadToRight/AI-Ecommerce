@@ -30,7 +30,7 @@ export async function createProductWithCollections({
         if (collections.length > 0) {
             console.log(collections);
 
-            await client.query("INSERT INTO product_collections (product_id,collection_id) SELECT $1 , id FROM collections WHERE name = ANY($2) ON CONFLICT DO NOTHING", [productId, collections])
+            await client.query("INSERT INTO product_collections (product_id,collection_id) SELECT $1 , id FROM collections WHERE id = ANY($2) ON CONFLICT DO NOTHING", [productId, collections])
         }
 
         await client.query("COMMIT");
