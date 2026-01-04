@@ -12,8 +12,9 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   let index = 1;
   let values = [];
 
-  const skip = (page - 1) * limit;
-
+  const pageNumber = Number(page);
+  const pageLimit = Number(limit)
+  const offset = (pageNumber - 1) * pageLimit;
 
 
   if (availability === 'in-stock') {
@@ -25,46 +26,56 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   if (price) {
     const [minPrice, maxPrice] = price.split("-")
     conditions.push(`price BETWEEN $${index} AND $${index + 1}`)
-    values.push(minPrice, maxPrice)
+    values.push(minPrice, maxPrice);
+    index += 2;
   }
 
   if (category) {
-    conditions.push(`category ILIKE ${index + 1}`);
+    conditions.push(`category ILIKE $${index}`);
     values.push(`%${category}%`)
+    index++;
   }
 
   if (ratings) {
-
-    conditions.push(`ratings >= ${index + 1}`);
+    conditions.push(`ratings >= $${index}`);
     values.push(ratings)
+    index++;
   }
   if (search) {
-    let query = `name ILIKE $${index + 1} OR description ILIKE $${index + 1}`;
+    let query = `(name ILIKE $${index} OR description ILIKE $${index})`;
     conditions.push(query)
-    values.push(`%${search}%`, `%${search}%`)
+    values.push(`%${search}%`)
+    index++;
   }
 
 
   let whereClause = conditions.length
     ? `WHERE ${conditions.join(" AND ")}`
     : "";
-  whereClause += ` ORDER BY created_at LIMIT ${limit} OFFSET ${skip};`
+  whereClause += ` `
 
-  console.log(whereClause);
 
   // Get count of filtered products
-  const productQuery = `SELECT * FROM products  ${whereClause} `
+  const productQuery = `SELECT * FROM products  ${whereClause} ORDER BY created_at LIMIT $${index} OFFSET $${index + 1}`
+
+  values.push(pageLimit, offset)
+
   const countQuery = `SELECT COUNT(*) FROM products ${whereClause}`
+
+
   const Products = await database.query(productQuery, values)
-  const totalProductsResult = await database.query(countQuery, values)
-  const totalProducts = parseInt(totalProductsResult.rows[0].count);
+
+  const countResult = await database.query(countQuery, values.slice(0, values.length - 2))
 
   res.status(200).json({
     success: true,
     Products: Products.rows,
-    totalProducts,
+    totalProducts: Number(countResult.rows[0].count),
+    page: pageNumber,
+    limit: pageLimit,
   })
 })
+
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
   const { name, description, price, stock = 0, collections = [] } = req.body;
   // console.log(req.body);
