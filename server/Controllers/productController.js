@@ -7,10 +7,13 @@ import { createProductWithCollections } from "../services/product.service.js";
 
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
-  const { price, availability = "in-stock", ratings, category, search, skip = 0, limit = 20 } = req.query;
+  const { price, availability = "in-stock", ratings, category, search, page = 1, limit = 20 } = req.query;
   const conditions = [];
   let index = 1;
   let values = [];
+
+  const skip = (page - 1) * limit;
+
 
 
   if (availability === 'in-stock') {
@@ -36,19 +39,21 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
     values.push(ratings)
   }
   if (search) {
-    let query = `SELECT * FROM products WHERE name ILIKE ${index + 1} OR description ILIKE ${index + 1}`;
-    // conditions.push(`name ILIKE ${index + 1} OR description ILIKE ${index + 1}`)
+    let query = `name ILIKE $${index + 1} OR description ILIKE $${index + 1}`;
     conditions.push(query)
     values.push(`%${search}%`, `%${search}%`)
   }
-  const whereClause = conditions.length
+
+
+  let whereClause = conditions.length
     ? `WHERE ${conditions.join(" AND ")}`
     : "";
+  whereClause += ` ORDER BY created_at LIMIT ${limit} OFFSET ${skip};`
 
-
+  console.log(whereClause);
 
   // Get count of filtered products
-  const productQuery = `SELECT * FROM products ${whereClause}`
+  const productQuery = `SELECT * FROM products  ${whereClause} `
   const countQuery = `SELECT COUNT(*) FROM products ${whereClause}`
   const Products = await database.query(productQuery, values)
   const totalProductsResult = await database.query(countQuery, values)
@@ -164,7 +169,7 @@ export const deleteProducts = catchAsyncErrors(async (req, res, next) => {
   })
 })
 
-export const SingleProduct = catchAsyncErrors(async (req, res, next) => {
+export const SingleProductAPI = catchAsyncErrors(async (req, res, next) => {
   const { name, collection } = req.params;
 
   if (!name) {
@@ -175,60 +180,24 @@ export const SingleProduct = catchAsyncErrors(async (req, res, next) => {
   let values;
 
   if (collection) {
-    // Product must belong to the given collection
-    query = `
-      SELECT p.*
-      FROM products p
-      JOIN product_collections pc ON pc.product_id = p.id
-      JOIN collections c ON c.id = pc.collection_id
-      WHERE p.name = $1 AND c.name = $2
-      LIMIT 1;
-    `;
+    query = `SELECT p.* FROM products as p JOIN product_collections as pc ON p.id = pc.produtc_id JOIN collections as c ON c.id = pc.collection_id WHERE p.name = $1 AND c.name = $2 LIMIT 1;`;
     values = [name, collection];
+
   } else {
-    // Fetch product by name only
-    query = `
-      SELECT *
-      FROM products
-      WHERE name = $1
-      LIMIT 1;
-    `;
+    query = `SELECT * FROM products WHERE name = $1 LIMIT 1;`
     values = [name];
   }
 
-  const { rows } = await database.query(query, values);
-
-  if (rows.length === 0) {
-    return next(new ErrorHandler("Product not found", 404));
+  const product = await database.query(query, values);
+  if (product.rows.length === 0) {
+    return next(new ErrorHandler("Product not found in the specified collection", 404));
   }
-
   res.status(200).json({
     success: true,
-    product: rows[0],
-  });
-});
+    product: product.rows[0],
+  })
 
-
-
-export const SingleProductAPI = () => {
-  const { name, collection } = req.params;
-
-  if (!name) {
-    return next(new ErrorHandler("Product name not provided", 400))
-  }
-
-  if (collection) {
-    const query = `SELECT p.* FROM products as p JOIN product_collections as pc ON p.id = pc.product_id JOIN collection as c ON c.id = pc.product_id WHERE p.name $1 AND c.name = $2 LIMIT 1`
-
-    database
-  }
-
-
-}
-
-
-
-
+})
 
 
 
