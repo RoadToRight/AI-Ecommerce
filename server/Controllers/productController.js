@@ -16,33 +16,49 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   const pageLimit = Number(limit)
   const offset = (pageNumber - 1) * pageLimit;
 
+  /* =====================
+     Availability
+  ====================== */
 
   if (availability === 'in-stock') {
-    conditions.push(`stock > 0`)
+    conditions.push(`p.stock > 0`)
   } else if (availability === 'out-of-stock') {
-    conditions.push(`stock = 0`)
+    conditions.push(`p.stock = 0`)
   }
 
+  /* =====================
+   Price
+====================== */
   if (price) {
     const [minPrice, maxPrice] = price.split("-")
-    conditions.push(`price BETWEEN $${index} AND $${index + 1}`)
+    conditions.push(`p.price BETWEEN $${index} AND $${index + 1}`)
     values.push(minPrice, maxPrice);
     index += 2;
   }
 
+
+  /* =====================
+     Category / Collection
+  ====================== */
   if (category) {
-    conditions.push(`category ILIKE $${index}`);
-    values.push(`%${category}%`)
+    conditions.push(`c.name = $${index}`);
+    values.push(category);
     index++;
   }
-
+  /* =====================
+     Ratings
+  ====================== */
   if (ratings) {
-    conditions.push(`ratings >= $${index}`);
+    conditions.push(`p.ratings >= $${index}`);
     values.push(ratings)
     index++;
   }
+
+  /* =====================
+   Search
+====================== */
   if (search) {
-    let query = `(name ILIKE $${index} OR description ILIKE $${index})`;
+    let query = `(p.name ILIKE $${index} OR p.description ILIKE $${index})`;
     conditions.push(query)
     values.push(`%${search}%`)
     index++;
@@ -56,11 +72,11 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
 
   // Get count of filtered products
-  const productQuery = `SELECT * FROM products  ${whereClause} ORDER BY created_at LIMIT $${index} OFFSET $${index + 1}`
+  const productQuery = `SELECT p.* FROM products p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id ${whereClause} ORDER BY p.created_at LIMIT $${index} OFFSET $${index + 1}`
 
   values.push(pageLimit, offset)
 
-  const countQuery = `SELECT COUNT(*) FROM products ${whereClause}`
+  const countQuery = `SELECT COUNT(*) FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id ${whereClause}`
 
 
   const Products = await database.query(productQuery, values)

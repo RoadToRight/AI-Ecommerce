@@ -1,10 +1,7 @@
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-toastify";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios"
-import axios from "axios";
 
 
 
