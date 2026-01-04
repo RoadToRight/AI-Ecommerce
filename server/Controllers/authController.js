@@ -32,11 +32,11 @@ export const register = catchAsyncErrors(async (req, res, next) => {
 
     generateJwtToken(user.rows[0], res, "Registered Successfully", 201);
 
-})  
+})
 export const login = catchAsyncErrors(async (req, res, next) => {
 
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
         return next(new ErrorHandler("Please Provide All Required Fields", 400));
     }
@@ -45,7 +45,7 @@ export const login = catchAsyncErrors(async (req, res, next) => {
     if (user.rows.length === 0) {
         return next(new ErrorHandler("Invalid Email or Password", 401));
     }
-    
+
 
     const isPasswordMatch = await bcrypt.compare(password, user.rows[0]?.password);
 
@@ -66,7 +66,9 @@ export const getUser = (req, res, next) => {
 export const logout = catchAsyncErrors(async (req, res, next) => {
     res.status(200).cookie("token", null, {
         expires: new Date(Date.now()),
-        httpOnly: true
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true
     }).json({
         success: true,
         message: "Logged Out Successfully"

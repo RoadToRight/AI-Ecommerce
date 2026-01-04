@@ -10,11 +10,11 @@ import ProductCard from '../Products/ProductCard';
 const Collection = () => {
     let dispatch = useDispatch();
     const [products, setProducts] = useState([1, 2, 3, 4, 5])
+
     const API = useApi()
     useEffect(() => {
         const fetchProducts = async () => {
             const data = await API({ type: "get", url: "/products/all" })
-            console.log(data)
             setProducts(data.Products)
         }
         fetchProducts()

@@ -60,53 +60,9 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
     totalProducts,
   })
 })
-
-export const deleteProducts = catchAsyncErrors(async (req, res, next) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return next(new ErrorHandler("Product Id is not Present", 400))
-  }
-
-  const findQuery = `SELECT * FROM products WHERE id = $1`;
-  const findProduct = await database.query(findQuery, [id])
-
-
-  if (!findProduct.rows.length > 0) {
-    return next(new ErrorHandler("Product Not Found", 400))
-  }
-
-  const deleteQuery = `DELETE FROM products WHERE id = $1`
-  await database.query(deleteQuery, [id])
-
-  res.status(200).json({
-    success: true,
-    message: `Product Deleted Successfully`
-  })
-})
-
-export const updateProducts = catchAsyncErrors(async (req, res) => {
-  const { id } = req.params;
-  const { name, description, price, stock, collections = [] } = req.body;
-
-  await database.query(
-    `UPDATE products
-     SET name=$1, description=$2, price=$3, stock=$4
-     WHERE id=$5`,
-    [name, description, price, stock, id]
-  );
-
-  await updateProductCollections(id, collections);
-
-  res.status(200).json({
-    success: true,
-    message: "Product updated successfully"
-  });
-});
-
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
   const { name, description, price, stock = 0, collections = [] } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   const collectionsnew = JSON.parse(req.body.collections) || [];
 
@@ -147,7 +103,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
       stock,
       images: JSON.stringify(uploadedImages),
       created_by: req.user.id,
-      collectionsnew // array of collection names from frontend, e.g. ["Electronics", "Sale"]
+      collections: collectionsnew
     });
 
     res.status(201).json({
@@ -165,6 +121,110 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
+export const updateProducts = catchAsyncErrors(async (req, res) => {
+  const { id } = req.params;
+  const { name, description, price, stock, collections = [] } = req.body;
+
+  await database.query(
+    `UPDATE products
+     SET name=$1, description=$2, price=$3, stock=$4
+     WHERE id=$5`,
+    [name, description, price, stock, id]
+  );
+
+  await updateProductCollections(id, collections);
+
+  res.status(200).json({
+    success: true,
+    message: "Product updated successfully"
+  });
+});
+
+export const deleteProducts = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return next(new ErrorHandler("Product Id is not Present", 400))
+  }
+
+  const findQuery = `SELECT * FROM products WHERE id = $1`;
+  const findProduct = await database.query(findQuery, [id])
+
+
+  if (!findProduct.rows.length > 0) {
+    return next(new ErrorHandler("Product Not Found", 400))
+  }
+
+  const deleteQuery = `DELETE FROM products WHERE id = $1`
+  await database.query(deleteQuery, [id])
+
+  res.status(200).json({
+    success: true,
+    message: `Product Deleted Successfully`
+  })
+})
+
+export const SingleProduct = catchAsyncErrors(async (req, res, next) => {
+  const { name, collection } = req.params;
+
+  if (!name) {
+    return next(new ErrorHandler("Product name not provided", 400));
+  }
+
+  let query;
+  let values;
+
+  if (collection) {
+    // Product must belong to the given collection
+    query = `
+      SELECT p.*
+      FROM products p
+      JOIN product_collections pc ON pc.product_id = p.id
+      JOIN collections c ON c.id = pc.collection_id
+      WHERE p.name = $1 AND c.name = $2
+      LIMIT 1;
+    `;
+    values = [name, collection];
+  } else {
+    // Fetch product by name only
+    query = `
+      SELECT *
+      FROM products
+      WHERE name = $1
+      LIMIT 1;
+    `;
+    values = [name];
+  }
+
+  const { rows } = await database.query(query, values);
+
+  if (rows.length === 0) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    product: rows[0],
+  });
+});
+
+
+
+export const SingleProductAPI = () => {
+  const { name, collection } = req.params;
+
+  if (!name) {
+    return next(new ErrorHandler("Product name not provided", 400))
+  }
+
+  if (collection) {
+    const query = `SELECT p.* FROM products as p JOIN product_collections as pc ON p.id = pc.product_id JOIN collection as c ON c.id = pc.product_id WHERE p.name $1 AND c.name = $2 LIMIT 1`
+
+    database
+  }
+
+
+}
 
 
 

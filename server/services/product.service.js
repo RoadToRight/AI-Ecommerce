@@ -10,9 +10,11 @@ export async function createProductWithCollections({
     stock,
     images,
     created_by,
-    collections = []
+    collections = [],
+
 }) {
     const client = await database.connect();
+    console.log(collections);
 
     try {
         await client.query("BEGIN");
@@ -28,7 +30,6 @@ export async function createProductWithCollections({
         const productId = result.rows[0].id;
 
         if (collections.length > 0) {
-            console.log(collections);
 
             await client.query("INSERT INTO product_collections (product_id,collection_id) SELECT $1 , id FROM collections WHERE id = ANY($2) ON CONFLICT DO NOTHING", [productId, collections])
         }

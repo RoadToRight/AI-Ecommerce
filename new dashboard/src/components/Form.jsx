@@ -52,25 +52,6 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
             [name]: value
         }))
     }
-    // const handleForm = (e) => {
-    //     e.preventDefault();
-    //     const Form = new FormData();
-    //     for (const key in FormInfo) {
-    //         const value = FormInfo[key];
-    //         Form.append(key, value)
-    //     }
-    //     mutate(Form)
-    // }
-
-
-
-
-    useEffect(() => {
-
-        console.log(FormInfo);
-
-
-    }, [FormInfo]);
 
 
 
@@ -190,7 +171,7 @@ const Form = ({ mutationKey, btnText, reqType, reqUrl, PreviewMode = false, data
                 }
             </div>
 
-        </FormSec >
+        </FormSec>
     )
 }
 
