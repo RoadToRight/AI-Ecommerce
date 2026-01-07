@@ -10,11 +10,11 @@ export const generateJwtToken = (user, res, message, statusCode) => {
     res.status(statusCode).cookie("token", token, {
         expires: new Date(Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        sameSite:"strict",
-        secure:true
+        sameSite: "strict",
+        secure: true
     }).json({
         success: true,
-        message: message,   
+        message: message,
         user,
         token,
     })

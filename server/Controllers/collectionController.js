@@ -13,12 +13,20 @@ export const createCollection = catchAsyncErrors(async (req, res, next) => {
   })
 })
 
-export const getAllCollections = catchAsyncErrors(async(req,res,next) => {
-    const query = `SELECT * FROM collections`
-    let Collections = await database.query(query);
+export const getAllCollections = catchAsyncErrors(async (req, res, next) => {
+  const { collection } = req.params;
 
-    res.status(200).json({
-        success:true,
-        Collections:Collections.rows
-    })
+  if (collection) {
+    conditions.push(`c.name ILIKE $${index}`);
+    values.push(collection);
+    index++;
+  }
+
+  const query = `SELECT * FROM collections`
+  let Collections = await database.query(query);
+
+  res.status(200).json({
+    success: true,
+    Collections: Collections.rows
+  })
 })

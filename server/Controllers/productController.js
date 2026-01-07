@@ -6,8 +6,9 @@ import { createProductWithCollections } from "../services/product.service.js";
 
 
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
-
-  const { price, availability = "in-stock", ratings, category, search, page = 1, limit = 20 } = req.query;
+  const { collection } = req.params;
+  const { category } = req.body;
+  const { price, availability = "in-stock", ratings, search, page = 1, limit = 20 } = req.query;
   const conditions = [];
   let index = 1;
   let values = [];
@@ -38,13 +39,19 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
 
   /* =====================
-     Category / Collection
+     Category
   ====================== */
+  console.log(category);
+
   if (category) {
-    conditions.push(`c.name = $${index}`);
+    console.log("ma agay category");
+
+    conditions.push(`c.name ILIKE $${index}`);
     values.push(category);
     index++;
   }
+
+
   /* =====================
      Ratings
   ====================== */
@@ -76,7 +83,7 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
   values.push(pageLimit, offset)
 
-  const countQuery = `SELECT COUNT(*) FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id ${whereClause}`
+  const countQuery = `SELECT COUNT(DISTINCT p.id) FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id ${whereClause}`
 
 
   const Products = await database.query(productQuery, values)
@@ -94,8 +101,6 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
   const { name, description, price, stock = 0, collections = [] } = req.body;
-  // console.log(req.body);
-
   const collectionsnew = JSON.parse(req.body.collections) || [];
 
   // 1️⃣ Validate required fields
