@@ -6,6 +6,8 @@ import SmallBox from '../components/SmallBox'
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '../libs/axiosInstance'
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import Table from '../components/Table'
+import { Link } from 'react-router-dom'
 
 let UserBoxes = [
     { head: "Total Products", quantity: 250, url: "/totaluser.png" },
@@ -13,8 +15,8 @@ let UserBoxes = [
 ]
 
 const columns = [
-    { accessorKey: "id", header: "Id", cell: (props) => <p>{props.getValue()}</p> },
-    { accessorKey: "name", header: "Name", cell: (props) => <p>{props.getValue()}</p> },
+    { accessorKey: "id", header: "Id", cell: (props) => <Link state={{data:props.row.original}} to={`/product/${props.row.original.id}`}><p>{props.getValue()}</p></Link> },
+    { accessorKey: "name", header: "Name", cell: (props) => <Link to={`/product/${props.row.original.id}`}><p>{props.getValue()}</p></Link> },
     { accessorKey: "description", header: "Description", cell: (props) => <p>{props.getValue()}</p> },
     { accessorKey: "price", header: "Price", cell: (props) => <p>{props.getValue()}</p> },
     { accessorKey: "stock", header: "Stock", cell: (props) => <p>{props.getValue()}</p> }
@@ -24,7 +26,7 @@ const Products = () => {
 
 
     const fetchProducts = async () => {
-        const { data } = await axiosInstance.get("/auth/Products");
+        const { data } = await axiosInstance.get("/products/all");
         return data
     }
 
@@ -34,13 +36,8 @@ const Products = () => {
         queryFn: fetchProducts,
 
     });
-    const Products = data?.data ?? []
+    const Products = data?.Products ?? []
 
-    const table = useReactTable({
-        data: Products,
-        columns: columns,
-        getCoreRowModel: getCoreRowModel()
-    })
 
 
     return (
@@ -67,42 +64,7 @@ const Products = () => {
                     }
                 </div>
 
-                {/* Table Header */}
-                {table.getHeaderGroups().map(headerGroup => (
-                    <div key={headerGroup.id} style={{ display: 'flex', backgroundColor: '#f3f4f6' }}>
-                        {headerGroup.headers.map(header => (
-                            <div
-                                key={header.id}
-                                style={{
-                                    flex: 1,
-                                    padding: '10px',
-                                    fontWeight: 'bold',
-                                    borderRight: '1px solid #ddd'
-                                }}
-                            >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-
-                {/* Table Body */}
-                {table.getRowModel().rows.map(row => (
-                    <div key={row.id} style={{ display: 'flex', borderTop: '1px solid #ddd' }}>
-                        {row.getVisibleCells().map(cell => (
-                            <div
-                                key={cell.id}
-                                style={{
-                                    flex: 1,
-                                    padding: '10px',
-                                    borderRight: '1px solid #ddd'
-                                }}
-                            >
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </div>
-                        ))}
-                    </div>
-                ))}
+                <Table data={Products} columns={columns} />
 
             </div>
         </Productsec>

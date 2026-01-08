@@ -11,7 +11,6 @@ const UpdateUser = () => {
 
     const { user } = useAppState();
     const [AddUserInfo, setAddUserInfo] = useState({ Email: "", Password: "", Avatar: null, Name: "", Role: "" })
-    console.log(user.role);
 
     const addUser = async () => {
 

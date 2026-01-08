@@ -65,7 +65,7 @@ export const authSlice = createSlice({
       state.authPopupOpen = !state.authPopupOpen
     },
     toggleAccountSidebar: (state, action) => {
-      state.accountSidebar = !state.accountSidebarc
+      state.accountSidebar = !state.accountSidebar
     }
   },
 
@@ -108,16 +108,15 @@ export const authSlice = createSlice({
         state.isLoggedIn = true
         state.accountSidebar = true
         state.user = action.payload.user
-        toast.success(action.payload?.message || "Get user Successfully");
+        // toast.success(action.payload?.message || "Get user Successfully");
       }).
       addCase(getUser.rejected, (state, action) => {
         state.isLoggedIn = false
         state.user = []
-        toast.warning(action.payload?.message || "Get user failed");
+        // toast.warning(action.payload?.message || "Get user failed");
       })
   }
 })
 
 export default authSlice.reducer;
 export const { toggleAuthPopup, toggleAccountSidebar } = authSlice.actions
-// export const { } = authSlice.actions;

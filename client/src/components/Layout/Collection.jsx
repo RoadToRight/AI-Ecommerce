@@ -11,7 +11,7 @@ const Collection = () => {
     let dispatch = useDispatch();
     const [products, setProducts] = useState([1, 2, 3, 4, 5])
 
-    const API = useApi()
+    const API = useApi(false)
     useEffect(() => {
         const fetchProducts = async () => {
             const data = await API({ type: "get", url: "/products/all" })
@@ -20,10 +20,6 @@ const Collection = () => {
         fetchProducts()
     }, [API])
 
-    useEffect(() => {
-        console.log(products);
-
-    }, [products])
 
 
     return (

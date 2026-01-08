@@ -33,7 +33,6 @@ function App() {
   }, [])
 
   if (loading) return <Loader />
-  console.log(isAuthenticated, user);
 
   return (
     <Router>

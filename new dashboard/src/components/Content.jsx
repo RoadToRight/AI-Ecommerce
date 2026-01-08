@@ -13,6 +13,8 @@ import { addProduct } from '../FormsConfig/AddProducts'
 import AddUser from '../pages/AddUser'
 import AddCollection from '../pages/AddCollection'
 import AddProduct from '../pages/AddProduct'
+import Products from '../pages/Products'
+import UpdateProduct from '../pages/UpdateProduct'
 
 const Content = () => {
 
@@ -22,8 +24,10 @@ const Content = () => {
 
             <Routes>
                 <Route path="users" element={<Users />} />
+                <Route path='products' element={<Products />} />
                 <Route path="add/user" element={<AddUser />} />
-                <Route path="settings" element={<UpdateUser />} />
+                <Route path="user/:id" element={<UpdateUser />} />
+                <Route path="product/:id" element={<UpdateProduct />} />
                 <Route path="collections/add" element={<AddCollection />} />
                 <Route path="products/add" element={<AddProduct />} />
             </Routes>
