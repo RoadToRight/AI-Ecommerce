@@ -7,7 +7,9 @@ import { createProductWithCollections } from "../services/product.service.js";
 
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   const { collection } = req.params;
-  const { category } = req.body;
+  
+  const { category = null } = req.body || {};
+
   const { price, availability = "in-stock", ratings, search, page = 1, limit = 20 } = req.query;
   const conditions = [];
   let index = 1;
@@ -41,10 +43,8 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   /* =====================
      Category
   ====================== */
-  console.log(category);
 
   if (category) {
-    console.log("ma agay category");
 
     conditions.push(`c.name ILIKE $${index}`);
     values.push(category);
@@ -100,8 +100,11 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 })
 
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
+
   const { name, description, price, stock = 0, collections = [] } = req.body;
-  const collectionsnew = JSON.parse(req.body.collections) || [];
+  console.log("req.body", price);
+
+  const collectionsnew = JSON.parse(req.body?.collections || "[]") || [];
 
   // 1️⃣ Validate required fields
   if (!name || !description || !price) {

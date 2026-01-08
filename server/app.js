@@ -31,7 +31,7 @@ createTables();
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/collections", collectionRoutes)
+app.use("/api/v1/", collectionRoutes)
 app.use(errorMiddleware)
 
 export default app;

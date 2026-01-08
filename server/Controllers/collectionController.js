@@ -17,16 +17,17 @@ export const getAllCollections = catchAsyncErrors(async (req, res, next) => {
   const { collection } = req.params;
 
   if (collection) {
-    conditions.push(`c.name ILIKE $${index}`);
-    values.push(collection);
-    index++;
+    const query = `SELECT p.* FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id WHERE c.name = $1`;
+
+    let Collections = await database.query(query,[collection]);
+    console.log(Collections.rows);
+    
+    res.status(200).json({
+      success: true,
+      Collections: Collections.rows
+    })
   }
 
-  const query = `SELECT * FROM collections`
-  let Collections = await database.query(query);
 
-  res.status(200).json({
-    success: true,
-    Collections: Collections.rows
-  })
-})
+
+})   
