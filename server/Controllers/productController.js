@@ -7,7 +7,7 @@ import { createProductWithCollections } from "../services/product.service.js";
 
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   const { collection } = req.params;
-  
+
   const { category = null } = req.body || {};
 
   const { price, availability = "in-stock", ratings, search, page = 1, limit = 20 } = req.query;
@@ -234,38 +234,3 @@ export const SingleProductAPI = catchAsyncErrors(async (req, res, next) => {
 
 })
 
-
-
-
-
-export const MongoFetchAllProducts = catchAsyncErrors(async (req, res, next) => {
-
-  const { price, availablity, category, search } = req.body;
-  let conditions = {};
-
-  if (availablity === "in-stock") {
-    conditions.availability = "in-stock"
-  } else if (availablity === "out-of-stock") {
-    conditions.availability = "out-of-stock"
-  }
-  if (price) {
-    const [minPrice, maxPrice] = split(price, "-");
-    conditions.price = { $gt: Number(minPrice), $lte: Number(maxPrice) }
-  }
-  if (category) {
-    conditions.category = { $in: category }
-  }
-  if (search) {
-    conditions.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { description: { $regex: search, $options: "i" } }
-    ]
-  }
-
-
-  await ProductModel.find(conditions)
-  res.status(200).json({
-    success: true,
-    products
-  });
-})
