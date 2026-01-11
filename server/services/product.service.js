@@ -41,7 +41,7 @@ export async function createProductWithCollections({
         await client.query("ROLLBACK");
         throw err;
     } finally {
-        client.release();
+        client.release(); 
     }
 }
 

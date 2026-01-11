@@ -17,4 +17,3 @@ export async function createProductCollectionsTable() {
         process.exit(1);
     }
 }
-
