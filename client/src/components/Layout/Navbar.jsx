@@ -1,4 +1,3 @@
-import { useTheme } from "../../contexts/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleAccountSidebar, toggleAuthPopup } from "../../store/slices/authSlice";
 import styled from "styled-components";

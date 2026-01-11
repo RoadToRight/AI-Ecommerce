@@ -2,7 +2,7 @@ import database from "../database/db.js";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { v2 as cloudinary } from 'cloudinary';
 import ErrorHandler from "../middlewares/error.js";
-import { createProductWithCollections } from "../services/product.service.js";
+import { createProductWithCollections } from "../services/productCollectionService.js";
 
 
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
