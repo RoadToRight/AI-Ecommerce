@@ -205,32 +205,41 @@ export const deleteProducts = catchAsyncErrors(async (req, res, next) => {
 })
 
 export const SingleProductAPI = catchAsyncErrors(async (req, res, next) => {
-  const { name, collection } = req.params;
+  const { slug, collection } = req.params;
 
-  if (!name) {
-    return next(new ErrorHandler("Product name not provided", 400));
+  if (!slug) {
+    return next(new ErrorHandler("Product not found", 400));
   }
 
-  let query;
-  let values;
+  const productQuery = `SELECT * FROM products where slug = $1 limit 1`
 
-  if (collection) {
-    query = `SELECT p.* FROM products as p JOIN product_collections as pc ON p.id = pc.produtc_id JOIN collections as c ON c.id = pc.collection_id WHERE p.name = $1 AND c.name = $2 LIMIT 1;`;
-    values = [name, collection];
+  let product = await database.query(productQuery, [slug]);
 
-  } else {
-    query = `SELECT * FROM products WHERE name = $1 LIMIT 1;`
-    values = [name];
+  const ProductPresentCollectionQuery = `SELECT pc.*,c.name FROM product_collections as pc JOIN collections as c ON c.id = pc.collection_id WHERE pc.product_id = $1`
+  let checkProductPresentCollection = await database.query(ProductPresentCollectionQuery, [product.rows[0].id])
+
+  if (checkProductPresentCollection) {
+
+    let isCollectionExist = checkProductPresentCollection.rows.find(({ name }) => {
+      return name.toLowerCase() === collection.toLowerCase();
+    })
+    if (isCollectionExist) {
+      res.status(200).json({
+        success: true,
+        message: "",
+        product: product.rows[0],
+      })
+    }else{
+      return next(new ErrorHandler("Product not found in the specified collection", 404));
+    }
+
   }
 
-  const product = await database.query(query, values);
-  if (product.rows.length === 0) {
-    return next(new ErrorHandler("Product not found in the specified collection", 404));
-  }
-  res.status(200).json({
-    success: true,
-    product: product.rows[0],
-  })
+
+
+  // const checkProductPresentCollection = `SELECT p.*,c.name FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id`;
+
+
 
 })
 

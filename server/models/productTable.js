@@ -14,6 +14,7 @@ export async function createProductsTable() {
     images JSON DEFAULT '[]'::JSONB,
     created_by UUID NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    slug VARCHAR(100) NOT NULL UNIQUE ,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 );
 `;

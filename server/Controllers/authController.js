@@ -6,7 +6,7 @@ import { generateJwtToken } from "../utils/generateJwtToken.js";
 import { generateResetPasswordToken } from "../utils/generateResetPasswordToken.js";
 import { generateEmailTemplate } from "../utils/generateForgetPasswordEmailTemplate.js";
 import crypto from "crypto"
-import { log } from "console";
+
 
 export const register = catchAsyncErrors(async (req, res, next) => {
 
@@ -63,6 +63,13 @@ export const getUser = (req, res, next) => {
         user
     })
 }
+export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+    const { name, email, password } = req.body;
+    const userId = req.user.id;
+
+    await database.query(`UPDATE users SET  WHERE id = $1`, [userId])
+
+})
 export const logout = catchAsyncErrors(async (req, res, next) => {
     res.status(200).cookie("token", null, {
         expires: new Date(Date.now()),
@@ -74,6 +81,7 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
         message: "Logged Out Successfully"
     })
 })
+
 export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const { email } = req.body;
 
@@ -156,9 +164,7 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 
 })
 
-export const updateProfile = catchAsyncErrors(async (req, res, next) => {
 
-})
 
 export const getUsers = catchAsyncErrors(async (req, res, next) => {
     const page = Number(req.query.page) || 1;

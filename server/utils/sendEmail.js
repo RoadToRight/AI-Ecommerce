@@ -19,7 +19,7 @@ export const sendEmail = async ({ email, subject, message, headers = false }) =>
     text: message,
     
     ...(headers && {headers: {
-      'List-Unsubscribe': '<mailto:unsubscribe@example.com>, <https://example.com/unsubscribe>',
+      'List-Unsubscribe': `<mailto:${SMTP_MAIL}>, <https://example.com/unsubscribe>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
     }})
   

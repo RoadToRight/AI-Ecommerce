@@ -15,6 +15,7 @@ import AddCollection from '../pages/AddCollection'
 import AddProduct from '../pages/AddProduct'
 import Products from '../pages/Products'
 import UpdateProduct from '../pages/UpdateProduct'
+import Chart from './Chart'
 
 const Content = () => {
 
@@ -30,6 +31,7 @@ const Content = () => {
                 <Route path="product/:id" element={<UpdateProduct />} />
                 <Route path="collections/add" element={<AddCollection />} />
                 <Route path="products/add" element={<AddProduct />} />
+                <Route path='/chart' element={<Chart />} />
             </Routes>
         </ContentDiv>
     )

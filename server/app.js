@@ -10,6 +10,7 @@ import { createTables } from './utils/createTables.js';
 import authRoutes from './routes/authRoutes.js';
 import { errorMiddleware } from './middlewares/error.js';
 import productRoutes from "./routes/productsRoutes.js";
+import SubscribeRouter from "./routes/emailController.js"
 const app = express();
 
 
@@ -30,8 +31,9 @@ app.use(fileUpload({
 createTables();
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/products", productRoutes);
+app.use("/api/v1", productRoutes);
 app.use("/api/v1/", collectionRoutes)
+app.use("/api/v1", SubscribeRouter)
 app.use(errorMiddleware)
 
 export default app;
