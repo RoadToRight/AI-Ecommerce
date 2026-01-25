@@ -1,10 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from "styled-components"
 import Button from "./Button"
 import { IoMdCart } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
+import { useLocation } from 'react-router-dom';
 
 const SingleProduct = () => {
+
+    const location = useLocation();
+    const [product, setproduct] = useState({})
+
+    useEffect(() => {
+        if (location.state) {
+            setproduct(location.state?.product)
+        }
+    }, [])
+
+    console.log("Location:", location.state);
     return (
         <Single>
             <div className="container">
@@ -16,18 +28,16 @@ const SingleProduct = () => {
 
                 <div className="right_side">
                     <div className="product_info">
-                        <h2 className="title">Dual Sense</h2>
-                        <h3 className="tagline">Wireless Controller</h3>
-                        <h5 className='price'>$40.00</h5>
+                        <h2 className="title">{product?.name}</h2>
+                        <h5 className='price'>${product?.price}</h5>
                         <div className="variants">
                             <div className="color">
                                 <h4>Color</h4>
-
                             </div>
                         </div>
                         <div className="products_excerpt">
                             <p>
-                                Wireless Gaming Controller, Joystick Gamepad with Dual-Vibration PC Game Controller Compatible with PS5, Switch, Windows 10/8/7 PC, Laptop, TV Box, Android Mobile Phones, 6.5 ft USB Cable
+                                {product?.description}
                             </p>
                         </div>
                         <div className="buttons">

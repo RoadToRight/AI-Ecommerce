@@ -5,21 +5,22 @@ import { Navigation } from "swiper/modules"
 import useApi from '../../customHooks/useApi'
 import { BsArrowRight, BsArrowLeft } from "react-icons/bs";
 import { Link } from 'react-router-dom'
-import { useGetPopularProductsQuery } from '../../store/api/productsApi'
+import { useGetAllProductsQuery, useGetPopularProductsQuery } from '../../store/api/productsApi'
 
 const HomeProductSlider = () => {
 
-    const [products, setProducts] = useState([1, 2, 3, 4, 5])
+    const [products, setProducts] = useState([])
 
     const prevRef = useRef(null)
     const nextRef = useRef(null)
 
-    const { data = [], isSuccess } = useGetPopularProductsQuery();
-
+    const { data = [], isSuccess } = useGetAllProductsQuery();
+    // console.log("Products data:", data.Products);
 
     useEffect(() => {
         if (isSuccess && data?.Products) {
             setProducts(data.Products || [])
+
         }
 
     }, [isSuccess])
@@ -55,20 +56,24 @@ const HomeProductSlider = () => {
                         1024: { slidesPerView: 3 },
                     }}
                 >
-                    {products.map(({ name, description, price, stock, images = [] }, index) => (
-                        <Link to={`/products/${name}`}>
-                            <SwiperSlide key={index}>
-                                <div className="img">
-                                    <img src={images[0]?.url} alt="" />
-                                </div>
-                                <div className="title_price">
-                                    <h3 className="product-title">{name}</h3>
-                                    <p className="price">${price}</p>
-                                </div>
-                                <h4 className="collection">Men</h4>
+                    {products.map((product, index) => {
+                        const { name, price, images = [], slug } = product
+
+                        return (
+                            <SwiperSlide key={slug}>
+                                <Link to={`/products/${slug}`} state={{ product }}>
+                                    <div className="img">
+                                        <img src={images[0]?.url} alt={name} />
+                                    </div>
+                                    <div className="title_price">
+                                        <h3 className="product-title">{name}</h3>
+                                        <p className="price">${price}</p>
+                                    </div>
+                                </Link>
                             </SwiperSlide>
-                        </Link>
-                    ))}
+                        )
+                    })}
+
                 </Swiper>
 
             </div>
