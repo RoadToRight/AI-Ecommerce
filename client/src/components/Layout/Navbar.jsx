@@ -24,7 +24,7 @@ const Navbar = () => {
       <li onClick={() => dispatch(toggleAuthPopup())} className="cursor-pointer">Account</li>
       <Link to={"/collections"}><li className="cursor-pointer">Collections</li></Link>
       <li onClick={() => dispatch(toggleSearchAction())}><IoSearchOutline cursor={"pointer"} /></li>
-      <li ><IoMdCart cursor={"pointer"} /></li>
+      <Link to={"/cart"}><li ><IoMdCart cursor={"pointer"} /></li></Link>
       <li onClick={handleAccount}><RiAccountCircle2Line cursor={"pointer"} /></li>
     </ul>
 

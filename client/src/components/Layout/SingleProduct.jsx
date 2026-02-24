@@ -4,11 +4,16 @@ import Button from "./Button"
 import { IoMdCart } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../store/slices/cartSlice';
+import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 
 const SingleProduct = () => {
 
     const location = useLocation();
-    const [product, setproduct] = useState({})
+    const [product, setproduct] = useState({});
+    const [quantity, setquantity] = useState(1)
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (location.state) {
@@ -16,13 +21,21 @@ const SingleProduct = () => {
         }
     }, [])
 
-    console.log("Location:", location.state);
+
+    const handleCart = (product) => {
+        dispatch(addToCart({ product, quantity }))
+    }
+
+    const handleQuantity = () => {
+
+    }
+
     return (
         <Single>
             <div className="container">
                 <div className="left_Side">
                     <div className="product_img">
-                        <img src="/joystick.png" alt="" />
+                        <img src={product?.images?.url} alt="" />
                     </div>
                 </div>
 
@@ -40,9 +53,16 @@ const SingleProduct = () => {
                                 {product?.description}
                             </p>
                         </div>
-                        <div className="buttons">
-                            <Button text={"ADD TO CART"} iconPosition={"left"} Icon={IoMdCart} />
-                            <Button bg={"transparent"} style={{ border: "0px" }} text={"add to Wishlist"} iconPosition={"left"} Icon={FaHeart} />
+                        <div className="buttons_quantity">
+                            <div className="quantity">
+                                <CiCirclePlus size={30} onClick={() => setquantity((prev) => prev + 1)} cursor={"pointer"} />
+                                <input type="number" min={1} max={50} value={quantity} onChange={(e) => setquantity(e.target.value ? e.target.value : 1)} />
+                                <CiCircleMinus size={30} onClick={() => setquantity((prev) => prev > 0 ? prev - 1 : 0)} cursor={"pointer"} />
+                            </div>
+                            <div className="btns">
+                                <Button text={"ADD TO CART"} iconPosition={"left"} Icon={IoMdCart} onClick={() => handleCart(product)} />
+                                <Button bg={"transparent"} style={{ border: "0px" }} text={"add to Wishlist"} iconPosition={"left"} Icon={FaHeart} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,13 +91,25 @@ export const Single = styled.div`
             gap: 5px;
         }
     }
-    .buttons{
+    .buttons_quantity{
         display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
         gap: 33px;
         margin-top: 10px;
+        input{
+            color: black;
+            padding: 0px 7px;
+        }
         button a{
             text-transform: uppercase;
+        }
+        .quantity{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
     }
     .left_Side{

@@ -8,7 +8,7 @@ import { createProductWithCollections } from "../services/productCollectionServi
 export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   const { collection } = req.params;
 
-  const { category = null } = req.body || {};
+  const { category = null, searchBody } = req.body || {};
 
   const { price, availability = "in-stock", ratings, search, page = 1, limit = 20 } = req.query;
   const conditions = [];
@@ -64,6 +64,13 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
   /* =====================
    Search
 ====================== */
+  if (searchBody) {
+    let query = `(p.name ILIKE $${index} OR p.description ILIKE $${index})`;
+    conditions.push(query);
+    values.push(`%${searchBody}%`)
+    index++;
+  }
+
   if (search) {
     let query = `(p.name ILIKE $${index} OR p.description ILIKE $${index})`;
     conditions.push(query)
@@ -97,6 +104,21 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
     page: pageNumber,
     limit: pageLimit,
   })
+})
+
+export const fetchSearchProducts = catchAsyncErrors(async (req, res, next) => {
+  const { searchBody } = req.body;
+  console.log(searchBody)
+  const Query = `SELECT * FROM products as p WHERE p.name ILIKE $1 OR p.description ILIKE $1`;
+
+  const searchData = await database.query(Query, [`%${searchBody}%`]);
+
+  res.status(200).json({
+    success: true,
+    message: "Search Data",
+    searchData: searchData.rows
+  })
+
 })
 
 export const createProduct = catchAsyncErrors(async (req, res, next) => {
@@ -229,7 +251,7 @@ export const SingleProductAPI = catchAsyncErrors(async (req, res, next) => {
         message: "",
         product: product.rows[0],
       })
-    }else{
+    } else {
       return next(new ErrorHandler("Product not found in the specified collection", 404));
     }
 

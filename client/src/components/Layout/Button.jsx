@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Loader from './Loader';
 
 const Button = ({ text, url, bg, color, onClick = () => { }, loading = false, type = "submit", Icon = FaArrowRight, style, iconPosition }) => {
-    console.log(bg);
 
     return (
         <Btn className='btn1' >

@@ -1,25 +1,70 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { SiGooglegemini } from "react-icons/si";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdCancel } from "react-icons/md";
 import { toggleSearchAction } from "../../store/slices/searchSlice";
+import { useGetAllProductsSearchMutation } from "../../store/api/productsApi";
 
 
 const Search = () => {
 
+  const [SearchData, setSearchData] = useState([])
   const isSearchOpen = useSelector((state) => state.search.toggleSearch)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [triggerFunction, { data, isLoading, error }] = useGetAllProductsSearchMutation();
+  const debounceId = useRef();
+
+  const handleSearch = (value) => {
+
+    clearTimeout(debounceId.current)
+
+    if (!value.trim()) return;
+
+    debounceId.current = setTimeout(() => {
+
+      triggerFunction({ searchBody: value });
+
+    }, 500);
+  }
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(debounceId.current)
+    }
+  }, [])
+
+
+  useEffect(() => {
+    if (data?.searchData) {
+      setSearchData(data?.searchData)
+    }
+  }, [data])
+
+
 
   return <SearchBar>
     <div className="container" style={{ top: `${isSearchOpen ? "0px" : "-100px"}` }}>
       <IoSearchOutline className="icon search_icon" />
-      <input type="search" placeholder="Serarch Products..." />
+      <input type="search" placeholder="Serarch Products..." onChange={(e) => handleSearch(e.target.value)} />
       <SiGooglegemini className="icon gemini_icon" />
       <MdCancel className="cancel_icon icon" size={20} onClick={() => dispatch(toggleSearchAction())} cursor={"pointer"} />
 
+    </div>
+
+    <div className="search_data">
+      {
+        SearchData?.map((product) => {
+          return (
+            <Link to={`/products/${product?.slug}`} state={{product}}>
+              <div key={product?.name} className="search_Card">
+                <strong>{product?.name}</strong>
+              </div></Link>
+          )
+        })
+      }
     </div>
 
   </SearchBar>
@@ -41,6 +86,9 @@ margin-top: 10px;
 .cancel_icon{
   position: absolute;
   right: 0px;
+}
+.search_data{
+  position: relative;
 }
   input{
     padding:20px 35px 20px 40px;

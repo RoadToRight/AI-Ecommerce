@@ -6,6 +6,7 @@ import useApi from '../../customHooks/useApi';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import ProductCard from '../Products/ProductCard';
+import { Link } from 'react-router-dom';
 
 const Collection = () => {
     let dispatch = useDispatch();
@@ -43,9 +44,9 @@ const Collection = () => {
                 </div>
 
                 <div className="products">
-                    {products?.map(({ name, price, description, images }) => {
+                    {products?.map(({ name, price, description, images, slug }) => {
                         return (
-                            <ProductCard name={name} price={price} description={description} img={images} />
+                           <ProductCard name={name} price={price} description={description} img={images} slug={slug}/>
                         )
                     })}
                 </div>

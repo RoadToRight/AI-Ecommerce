@@ -12,8 +12,18 @@ export const productsApi = createApi({
     }),
     getPopularProducts: builder.query({
       query: () => "/collections/popular"
+    }),
+    getAllProductsSearch: builder.mutation({
+      query: (searchBody) => ({
+        url: "/search",
+        method: "POST",
+        body: searchBody,
+      })
+    }),
+    getSingleProduct: builder.query({
+      query: () => ``
     })
   })
 })
 
-export const { useGetAllProductsQuery,useGetPopularProductsQuery } = productsApi;
+export const { useGetAllProductsQuery, useGetAllProductsSearchMutation, useGetPopularProductsQuery } = productsApi;

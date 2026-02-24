@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components"
 
-const ProductCard = ({ name, price, description, img = [] }) => {
+const ProductCard = ({ name, price, description, img = [], slug }) => {
 
 
   return (
     <>
-      <Link to={""}>
+      <Link to={`/collections/name/products/${slug}`}>
         <Card>
           <img src={img[0]?.url} />
           <div className="title_price">

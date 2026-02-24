@@ -16,6 +16,7 @@ import AddProduct from '../pages/AddProduct'
 import Products from '../pages/Products'
 import UpdateProduct from '../pages/UpdateProduct'
 import Chart from './Chart'
+import Hero from './Hero'
 
 const Content = () => {
 
@@ -24,6 +25,7 @@ const Content = () => {
         <ContentDiv>
 
             <Routes>
+                <Route path='/' element={<Hero />} />
                 <Route path="users" element={<Users />} />
                 <Route path='products' element={<Products />} />
                 <Route path="add/user" element={<AddUser />} />
@@ -33,6 +35,8 @@ const Content = () => {
                 <Route path="products/add" element={<AddProduct />} />
                 <Route path='/chart' element={<Chart />} />
             </Routes>
+
+
         </ContentDiv>
     )
 }
@@ -43,4 +47,6 @@ const ContentDiv = styled.div`
     max-height: 100vh;
     overflow-y: auto;
     width: 100%;
+    padding:34px 46px ;
+    background-color: var(--bg-main);
 `

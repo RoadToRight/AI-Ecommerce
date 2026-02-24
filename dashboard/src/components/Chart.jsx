@@ -10,7 +10,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js'
-import { Bar } from "react-chartjs-2"
+import { Bar, Line } from "react-chartjs-2"
 
 ChartJS.register(
     CategoryScale,
@@ -23,34 +23,15 @@ ChartJS.register(
     Legend,
 )
 
-const Chart = () => {
+const Chart = ({ Chart, data, options }) => {
 
-    const data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-        datasets: [
-            {
-                label: "Sales",
-                data: [120, 190, 300, 250, 220],
-            }
-        ]
-    }
 
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "top",
-            }
-        },
-        title: {
-            display: true,
-            text: "Monthly Sales"
-        }
-    }
+
 
     return (
         <div>
-            <Bar data={data} options={options} redraw={false} />
+
+            {Chart && <Chart data={data} options={options} redraw={false} />}
         </div>
     )
 }
