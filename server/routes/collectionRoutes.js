@@ -3,6 +3,7 @@ import { createCollection, getAllCollections } from "../controllers/collectionCo
 
 const app = express.Router();
 
-app.post("/collections/create",createCollection)
-app.get("/products/collections/:collection",getAllCollections)
+app.post("/collections/create", createCollection);
+app.get("/products/collections/:collection", getAllCollections);
+app.get("/collections/:name",getAllCollections)
 export default app;

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { CiFilter } from "react-icons/ci";
 import { useDispatch } from 'react-redux';
 import ProductCard from '../Products/ProductCard';
-import { useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useLazyGetCollectionsQuery } from '../../store/api/collectionApi';
 import Loader from '../General/Loader';
 // import { toggleFilterAction } from '../../store/slices/filterSlice'; // Uncomment if you have this
@@ -14,7 +14,10 @@ const Collection = () => {
     const Params = useParams();
     const [trigger, { data, isLoading, isSuccess }] = useLazyGetCollectionsQuery();
 
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState([]);
+    const [ProductsCount, setProductsCount] = useState(0)
+    const [ProductsLimit, setProductsLimit] = useState(7)
+    const location = useLocation();
 
     useEffect(() => {
         if (Params?.name) {
@@ -25,6 +28,9 @@ const Collection = () => {
     useEffect(() => {
         if (data?.Collections?.length > 0) {
             setProducts(data.Collections)
+            setProductsCount(data?.CollectionsCount?.total)
+            setProductsLimit(data?.limit)
+            console.log(data)
         } else {
             setProducts([])
         }
@@ -56,7 +62,7 @@ const Collection = () => {
                         </select>
 
                         <div className="total_products">
-                            <h5>{products.length} products</h5>
+                            <h5>{ProductsCount} products</h5>
                         </div>
                     </div>
                 </div>
@@ -96,19 +102,35 @@ const Collection = () => {
                     {isLoading ? (
                         <Loader />
                     ) : (
-                        <div className="products">
-                            {products?.map(({ name, price, description, images, slug }) => (
-                                <ProductCard
-                                    key={name}
-                                    name={name}
-                                    price={price}
-                                    description={description}
-                                    img={images}
-                                    slug={slug}
-                                />
-                            ))}
+                        <div className="product_wrapper">
+                            <div className="products">
+                                {products?.map(({ name, price, description, images, slug }) => (
+                                    <ProductCard
+                                        key={name}
+                                        name={name}
+                                        price={price}
+                                        description={description}
+                                        img={images}
+                                        slug={slug}
+                                    />
+                                ))}
+                            </div>
+                            <div className="pagination_wrapper">
+                                {
+                                    Array.from({ length: Math.ceil(Number(ProductsCount / ProductsLimit)) }, (_, i) => {
+                                        return (
+                                            <Link to={`${location?.pathname}/?page=2`}><div className="pagination">{i + 1}</div></Link>
+
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
                     )}
+
+                    {/* {products.length < ProductsCount ? "2" : "1"} */}
+
+
 
                 </div>
             </div>
@@ -126,7 +148,16 @@ padding: 30px 0px;
     font-size: 34px;
     font-weight: 700;
 }
-
+.pagination_wrapper{
+    padding: 50px 0px;
+}
+.pagination{
+    background-color:#07132e ;
+    width: max-content;
+    padding: 7px 16px;
+    border-radius: 100px;
+    border: 2px solid hsl(217 91% 60%);
+}
 .filter_bar{
     display: flex;
     justify-content: space-between;
