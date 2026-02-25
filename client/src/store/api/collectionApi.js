@@ -14,10 +14,12 @@ export const collectionApi = createApi({
             invalidatesTags: ["Collections"]
         }),
         getCollections: builder.query({
-            query: () => "/all",
+            query: (name) => ({
+                url: `/${name}`,
+            }),
             providesTags: ["Collections"]
         })
     })
 })
 
-export const { useCreateCollectionMutation, useGetCollectionsQuery } = collectionApi;
+export const { useCreateCollectionMutation, useGetCollectionsQuery,useLazyGetCollectionsQuery } = collectionApi;

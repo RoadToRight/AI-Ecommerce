@@ -52,7 +52,7 @@ const App = () => {
           <CartSidebar />
           {/* <Account /> */}
           <Routes>
-            <Route path="/collections" element={<Collection />} />
+            <Route path="/collections/:name" element={<Collection />} />
             <Route path="/" element={<Index />} />
             <Route path="/password/reset/:token" element={<Index />} />
             <Route path="/products/:name" element={<SingleProduct />} />

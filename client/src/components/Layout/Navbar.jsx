@@ -19,10 +19,10 @@ const Navbar = () => {
   }
 
   return <NavBar className="bg-[#07132E] container py-[20px]">
-    <div className="logo"><img src="/Logo.png" alt="" /></div>
+    <Link to={"/"}><div className="logo"><img src="/Logo.png" alt="" /></div></Link>
     <ul className="nav_list">
       <li onClick={() => dispatch(toggleAuthPopup())} className="cursor-pointer">Account</li>
-      <Link to={"/collections"}><li className="cursor-pointer">Collections</li></Link>
+      <Link to={"/collections/all"}><li className="cursor-pointer">Collections</li></Link>
       <li onClick={() => dispatch(toggleSearchAction())}><IoSearchOutline cursor={"pointer"} /></li>
       <Link to={"/cart"}><li ><IoMdCart cursor={"pointer"} /></li></Link>
       <li onClick={handleAccount}><RiAccountCircle2Line cursor={"pointer"} /></li>
@@ -38,9 +38,10 @@ const NavBar = styled.div`
     border-radius: 20px;
      box-shadow: 0px 0px 3px 0px #4586F1;
      display: flex;
-    margin-top: 12px;
+    margin: 12px auto;
      justify-content: space-between;
      align-items: center;
+
      .nav_list{
       display: flex;
       gap: 10px;

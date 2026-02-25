@@ -11,7 +11,7 @@ const Cart = () => {
 
     {cart.length === 0 ? <div className="empty_cart">
       <h2>Your cart is empty</h2>
-      <Link to={"/shop"} className="btn">Go to Shop</Link></div>
+      <Link to={"/collections/all"} className="btn">Go to Shop</Link></div>
       : <div className="cart_page">
         <div className="cart_items">
           {

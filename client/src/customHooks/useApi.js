@@ -12,7 +12,6 @@ const useApi = (errorMessage = true) => {
                     : await axiosInstance(type, url, data);
             return response.data;
         } catch (error) {
-            console.log(errorMessage);
 
             if (errorMessage) {
                 toast.error(error?.response?.data?.message || error.message || erMess || "Request Failed!");

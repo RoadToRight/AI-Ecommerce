@@ -16,7 +16,7 @@ const CategoryGrid = () => {
         {categories.map((category) => (
           <Link
             key={category.id}
-            to={`/products?category=${category.name}`}
+            to={`/collections/${category.name}`}
             className="group glass-card p-6 text-center hover:glow-on-hover animate-smooth"
           >
             <div className="relative overflow-hidden rounded-lg mb-4">
