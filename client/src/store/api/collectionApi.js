@@ -14,12 +14,13 @@ export const collectionApi = createApi({
             invalidatesTags: ["Collections"]
         }),
         getCollections: builder.query({
-            query: (name) => ({
-                url: `/${name}`,
+            query: ({ params, page }) => ({
+                url: `/${params}`,
+                params: page ? { page: page } : undefined
             }),
             providesTags: ["Collections"]
         })
     })
 })
 
-export const { useCreateCollectionMutation, useGetCollectionsQuery,useLazyGetCollectionsQuery } = collectionApi;
+export const { useCreateCollectionMutation, useGetCollectionsQuery, useLazyGetCollectionsQuery } = collectionApi;

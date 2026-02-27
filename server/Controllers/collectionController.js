@@ -14,21 +14,25 @@ export const createCollection = catchAsyncErrors(async (req, res, next) => {
 })
 
 export const getAllCollections = catchAsyncErrors(async (req, res, next) => {
-  const { name } = req.params;
-  const { skip = 0, limit = 5 } = req.query;
-  if (name) {
+  const { params: collectionName } = req.params;
+  const pageNumber = Number(req.query.page) || 1;
+  let limit = 5;
+  let skip = Number((pageNumber - 1) * limit);
+
+  if (collectionName) {
+
     const query = `SELECT p.* FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id WHERE c.name ILIKE $1 LIMIT $2 OFFSET $3`;
 
     const CountQuery = `SELECT COUNT(DISTINCT p.id) as Total FROM products as p JOIN product_collections as pc ON pc.product_id = p.id JOIN collections as c ON c.id = pc.collection_id WHERE c.name ILIKE $1`
 
-    let Collections = await database.query(query, [name, limit, skip]);
-    let CollectionsCount = await database.query(CountQuery, [name]);
+    let Collections = await database.query(query, [collectionName, limit, skip]);
+    let CollectionsCount = await database.query(CountQuery, [collectionName]);
     // console.log(Collections.rows);
 
     res.status(200).json({
       success: true,
       Collections: Collections.rows,
-      CollectionsCount:CollectionsCount.rows[0],
+      CollectionsCount: CollectionsCount.rows[0],
       limit
     })
   }

@@ -5,5 +5,5 @@ const app = express.Router();
 
 app.post("/collections/create", createCollection);
 app.get("/products/collections/:collection", getAllCollections);
-app.get("/collections/:name",getAllCollections)
+app.get("/collections/:params", getAllCollections)
 export default app;

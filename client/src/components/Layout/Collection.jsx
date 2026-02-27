@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { CiFilter } from "react-icons/ci";
 import { useDispatch } from 'react-redux';
 import ProductCard from '../Products/ProductCard';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useLazyGetCollectionsQuery } from '../../store/api/collectionApi';
 import Loader from '../General/Loader';
 // import { toggleFilterAction } from '../../store/slices/filterSlice'; // Uncomment if you have this
@@ -12,18 +12,27 @@ const Collection = () => {
 
     const dispatch = useDispatch();
     const Params = useParams();
+    const [SearchQuery] = useSearchParams();
     const [trigger, { data, isLoading, isSuccess }] = useLazyGetCollectionsQuery();
+    const [Filter, setFilter] = useState();
 
     const [products, setProducts] = useState([]);
     const [ProductsCount, setProductsCount] = useState(0)
     const [ProductsLimit, setProductsLimit] = useState(7)
     const location = useLocation();
 
+
+    const [FiltersData, setFiltersData] = useState([
+        { type: "Category", filters: ["RTX"] },
+        { type: "Brand", filters: ["AMD", "NVIDIA", "Asus"] }
+    ]);
+
+
     useEffect(() => {
         if (Params?.name) {
-            trigger(Params.name)
+            trigger({ params: Params.name, page: SearchQuery.get("page") })
         }
-    }, [Params])
+    }, [Params, SearchQuery])
 
     useEffect(() => {
         if (data?.Collections?.length > 0) {
@@ -75,26 +84,30 @@ const Collection = () => {
 
                         <h4>Filters</h4>
 
-                        <div className="filter_group">
-                            <h5>Category</h5>
-                            <label><input type="checkbox" /> Shoes</label>
-                            <label><input type="checkbox" /> T-Shirts</label>
-                            <label><input type="checkbox" /> Hoodies</label>
-                        </div>
+                        {
+                            FiltersData?.map(({ type, filters }) => {
+                                return (
+                                    <div className="filter_group">
+                                        <h5>{type}</h5>
+                                        {
+                                            filters?.map((names) => {
+                                                return (
+                                                    <label key={names}><input type="checkbox" onChange={(e) => setFilter()}/>{names}</label>
+
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+
 
                         <div className="filter_group">
                             <h5>Price</h5>
-                            <label><input type="checkbox" /> Under $50</label>
-                            <label><input type="checkbox" /> $50 - $100</label>
-                            <label><input type="checkbox" /> Above $100</label>
+                            <label><input type="range" min={"0"} max={"3000"} /> Under $50</label>
                         </div>
 
-                        <div className="filter_group">
-                            <h5>Brand</h5>
-                            <label><input type="checkbox" /> Nike</label>
-                            <label><input type="checkbox" /> Adidas</label>
-                            <label><input type="checkbox" /> Puma</label>
-                        </div>
 
                     </div>
 
@@ -119,7 +132,7 @@ const Collection = () => {
                                 {
                                     Array.from({ length: Math.ceil(Number(ProductsCount / ProductsLimit)) }, (_, i) => {
                                         return (
-                                            <Link to={`${location?.pathname}/?page=2`}><div className="pagination">{i + 1}</div></Link>
+                                            <Link to={`${location?.pathname}?page=${i + 1}`}><div className="pagination">{i + 1}</div></Link>
 
                                         )
                                     })
@@ -150,6 +163,10 @@ padding: 30px 0px;
 }
 .pagination_wrapper{
     padding: 50px 0px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
 }
 .pagination{
     background-color:#07132e ;
